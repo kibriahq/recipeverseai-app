@@ -6,8 +6,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  --color-primary: #2EC4B6;         /* Fresh Mint */
+  --color-secondary: #FF9F1C;       /* Harvest Orange */
+  --color-background: #F9FBFF;      /* Cloud White */
+  --color-surface: #F7F3E3;         /* Soft Cream */
+  --color-primary-text: #192A56;    /* Deep Navy */
+  --color-secondary-text: #5C677D;  /* Slate Grey */
+}
+
 @theme inline {
-  --color-background: var(--background);
+  /* --color-background: var(--background); */
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
@@ -34,9 +43,9 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
+  /* --color-secondary: var(--secondary); */
   --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
+  /* --color-primary: var(--primary); */
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
