@@ -6,10 +6,14 @@ const Features = () => {
     return (
         <section className="h-screen container mx-auto flex flex-col justify-center gap-10">
             <div className="w-1/2 mx-auto text-center">
-                <h2 className="text-5xl font-semibold text-primary-text">
+                <div className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-1 backdrop-blur-md">
+                    <span className="h-2 w-2 rounded-full bg-primary" />
+                    <span className="ml-2 text-sm font-medium text-primary">Learn Features</span>
+                </div>
+                <h2 className="mt-4 text-3xl md:text-4xl font-semibold text-primary-text">
                     Our Features
                 </h2>
-                <p className="text-primary-text mt-5">
+                <p className="text-secondary-text mt-5">
                     Write your own recipes, see what other cooks are making, follow the ones whose food you'd actually cook again, and lean on AI when a recipe needs adjusting.
                 </p>
             </div>
@@ -24,7 +28,7 @@ const Features = () => {
                     title="Build your recipe box"
                     description="Write, edit, and organise your own recipes, ingredients, steps, photos and all, and keep them exactly the way you cook them."
                     bgIcon={
-                        <ChefHat size={200} className="text-secondary-text/10" />
+                        <ChefHat size={200} className="text-secondary-text/6" />
                     }
                 />
                 <FeatureItem
@@ -36,7 +40,7 @@ const Features = () => {
                     title="Discover what's cooking"
                     description="Search recipes and creators by ingredient, cuisine, or name, and find your next meal instead of scrolling for one."
                     bgIcon={
-                        <Search size={200} className="text-secondary-text/10" />
+                        <Search size={200} className="text-secondary-text/6" />
                     }
                 />
                 <FeatureItem
@@ -48,7 +52,7 @@ const Features = () => {
                     title="Follow the cooks you trust"
                     description="Like the recipes that work and follow the people who keep making them, so your feed fills up with food worth repeating."
                     bgIcon={
-                        <UserCheck size={200} className="text-secondary-text/10" />
+                        <UserCheck size={200} className="text-secondary-text/6" />
                     }
                 />
                 <FeatureItem
@@ -60,7 +64,7 @@ const Features = () => {
                     title="Ask your AI sous-chef"
                     description="Stuck mid-recipe? Ask for a substitution, a serving-size scale-up, or a timing fix, without leaving the page."
                     bgIcon={
-                        <Astroid size={200} className="text-secondary-text/10" />
+                        <Astroid size={200} className="text-secondary-text/6" />
                     }
                 />
             </div>
