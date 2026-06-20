@@ -11,25 +11,13 @@ const Page = () => {
             <div className="h-72 w-full bg-primary/10 -skew-y-6 absolute -top-5 left-0 right-0"></div>
             <Card className="rounded-xl border-surface/20 w-md relative z-10 mt-20">
                 <CardHeader className='py-3'>
-                    <CardTitle className='text-center text-primary-text font-semibold text-2xl'>Create Your Account</CardTitle>
-                    <CardDescription className='text-center text-sm'>Join RecipeVerse AI Today</CardDescription>
+                    <CardTitle className='text-center text-primary-text font-semibold text-2xl'>Login Your Account</CardTitle>
+                    <CardDescription className='text-center text-sm'>Get access to your account</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form action="">
                         <div className="grid gap-3 w-full">
 
-                            <InputGroup className="rounded-sm h-10">
-                                <InputGroupInput placeholder="Full Name" />
-                                <InputGroupAddon>
-                                    <User />
-                                </InputGroupAddon>
-                            </InputGroup>
-                            <InputGroup className="rounded-sm h-10">
-                                <InputGroupInput placeholder="Username" />
-                                <InputGroupAddon>
-                                    <User />
-                                </InputGroupAddon>
-                            </InputGroup>
                             <InputGroup className="rounded-sm h-10">
                                 <InputGroupInput placeholder="Email Address" />
                                 <InputGroupAddon>
@@ -42,15 +30,12 @@ const Page = () => {
                                     <Lock />
                                 </InputGroupAddon>
                             </InputGroup>
-                            <InputGroup className="rounded-sm h-10">
-                                <InputGroupInput placeholder="Confirm Password" />
-                                <InputGroupAddon>
-                                    <Lock />
-                                </InputGroupAddon>
-                            </InputGroup>
 
-                            <p className="text-primary-text">Already have an account? <Link href="/login" className="text-primary">Login</Link></p>
-                            <Button variant="hero" className="w-full rounded-sm h-10 mb-2">Create Account</Button>
+                            <div className="flex w-full items-center justify-between flex-row-reverse">
+                                <p className="text-primary-text text-sm font-semibold">Forgot Password?</p>
+                                <p className="text-primary-text text-left">Don't have an account? <Link href="/signup" className="text-primary">Sign up</Link></p>
+                            </div>
+                            <Button variant="hero" className="w-full rounded-sm h-10 mb-2">Login</Button>
                         </div>
                     </form>
                 </CardContent>
