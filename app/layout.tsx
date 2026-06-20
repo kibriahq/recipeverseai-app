@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
+import AiButton from "@/components/AiButton";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -35,6 +36,8 @@ export default function RootLayout({
           </div>
         </div>
         {/* <Footer /> */}
+
+        <AiButton />
       </body>
     </html>
   );

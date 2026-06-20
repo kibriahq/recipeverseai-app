@@ -28,7 +28,7 @@ const Navbar = () => {
                 <Image src="/logo.png" alt="Logo" width={200} height={50} className="w-fit h-10" />
             </div>
             <nav className='fixed md:hidden bottom-0 left-0 right-0 z-50 h-16 bg-white/90 backdrop-blur-lg border-b border-surface/20'>
-                <ul className='w-full grid grid-cols-5 justify-center items-center px-5 h-full'>
+                <ul className='w-full grid grid-cols-5 justify-center items-center px-3 h-full'>
                     <li className='mx-auto'>
                         <Link href="/" className='text-sm w-full flex items-center gap-0 text-primary-text/80 hover:text-primary rounded-none transition-all duration-150 flex-col'>
                             <Home size={22} className='font-normal' />
@@ -53,7 +53,7 @@ const Navbar = () => {
                         </Link>
                     </li>
                     <li className='mx-auto'>
-                        <Link href="/" className='text-sm w-full flex items-center gap-0 text-primary-text/80 hover:text-primary rounded-none transition-all duration-150 flex-col'>
+                        <Link href="/profile" className='text-sm w-full flex items-center gap-0 text-primary-text/80 hover:text-primary rounded-none transition-all duration-150 flex-col'>
                             <User size={22} className='font-normal' />
                             <span className='font-normal'>Profile</span>
                         </Link>

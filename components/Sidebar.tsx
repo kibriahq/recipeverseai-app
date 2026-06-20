@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
-import { Astroid, LayoutPanelLeft, LogOut, Search, User } from 'lucide-react'
+import { Astroid, BookmarkPlus, LayoutPanelLeft, LogOut, Plus, Search, User } from 'lucide-react'
 
 const ProfileStats = ({ value, title }: { value: number, title: string }) => {
     return (
@@ -16,7 +16,7 @@ const Sidebar = () => {
     return (
         <>
         <div className="hidden md:block w-64 min-w-64"></div>
-            <aside className="hidden md:flex fixed top-0 left-0 bottom-0 w-64 min-w-64 h-screen bg-surface flex-col items-center">
+            <aside className="hidden md:flex fixed top-0 left-0 bottom-0 w-64 min-w-64 h-screen bg-surface flex-col items-center overflow-y-auto">
                 <div className="py-2 px-4">
                     <Image src="/logo.png" alt="Logo" width={200} height={50} className="w-fit h-10" />
                 </div>
@@ -52,6 +52,12 @@ const Sidebar = () => {
                         </li>
                         <li className="mb-1">
                             <Link href="/" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
+                                <BookmarkPlus size={20} className='font-boldbold' />
+                                <span className='font-semibold'>Add Recipe</span>
+                            </Link>
+                        </li>
+                        <li className="mb-1">
+                            <Link href="/" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
                                 <Search size={20} className='font-boldbold' />
                                 <span className='font-semibold'>Explore</span>
                             </Link>
@@ -63,7 +69,7 @@ const Sidebar = () => {
                             </Link>
                         </li>
                         <li className="mb-1">
-                            <Link href="/" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
+                            <Link href="/profile" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
                                 <User size={20} className='font-boldbold' />
                                 <span className='font-semibold'>Profile</span>
                             </Link>

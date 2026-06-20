@@ -91,35 +91,40 @@ const Page = () => {
     return (
         <main className="flex min-h-screen flex-col ">
             <div className="h-72 w-full bg-primary/10 -skew-y-6 absolute top-0 left-0 right-0"></div>
-            <div className="container mx-auto flex gap-4 mt-30">
+            <div className="container mx-auto flex flex-col gap-4 mt-30 md:mt-10">
                 {/* Profile Card */}
-                <Card className="px-5 py-6 relative h-fit w-[350px]">
-                    <div className="h-20 w-full z-10 bg-primary/30 absolute top-0 left-0 right-0"></div>
-                    <CardHeader className="flex flex-col items-center justify-center text-center z-20 pt-6">
+                <Card className="px-5 py-6 relative h-fit w-full md:w-full gap-2">
+                    <div className="h-20 w-full z-10 bg-primary/30 absolute top-0 left-0 right-0 md:hidden"></div>
+                    <CardHeader className="flex flex-col md:flex-row items-center md:justify-start justify-center text-center gap-5 z-20 pt-6">
+
                         <Image
                             src="https://picsum.photos/200"
-                            height={85}
-                            width={85}
+                            height={120}
+                            width={120}
                             alt='Profile Pic'
-                            className='rounded-full'
+                            className='rounded-full ring-3 ring-primary'
                         />
-                        <div className="flex flex-col items-center justify-center">
-                            <CardTitle className="font-bold text-2xl text-primary-text">John Doe</CardTitle>
-                            <h2 className="text-secondary-text leading-4">@johndoe</h2>
+                        <div className="flex flex-col items-center md:items-start justify-center md:gap-1">
+                            <CardTitle className="font-bold text-2xl md:text-3xl text-primary-text">John Doe</CardTitle>
+                            <h2 className="text-secondary-text leading-4 md:text-lg">@johndoe</h2>
+                            <p className="text-secondary-text py-2 md:text-lg md:text-left">I love cooking and sharing my recipes with the world. Lorem ipsum </p>
                         </div>
-                        <p className="text-secondary-text py-2">I love cooking and sharing my recipes with the world. Lorem ipsum </p>
+
                     </CardHeader>
-                    <CardContent className="flex justify-around">
+                    <CardContent className="flex justify-around md:justify-start md:gap-10 lg:gap-20 md:pl-[150px]">
                         <ProfileStats value={24} title="Recipes" />
                         <ProfileStats value={12} title="Followers" />
                         <ProfileStats value={8} title="Following" />
                     </CardContent>
-                    <Button variant="default" size="lg">Edit Profile</Button>
+                    <div className="flex justify-center md:justify-start w-full gap-2 mt-2 md:gap-2 lg:gap-5 md:pl-[150px]">
+                        <Button variant="default" size="lg" className='w-36 lg:w-64 h-10'>Edit Profile</Button>
+                        <Button variant="outline" size="lg" className='w-36 lg:w-64 h-10 text-secondary border-secondary hover:text-white hover:bg-secondary'>Change Password</Button>
+                    </div>
                 </Card>
 
                 <div className="grow">
-                    <h3 className="text-2xl text-primary-text font-bold mb-2">Published Recipes</h3>
-                    <div className="grid grid-cols-4 gap-4">
+                    <h3 className="text-2xl text-primary-text font-bold my-5 md:my-4">Published Recipes</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
                         {recipes.map((recipe) => (
                             <RecipeCard {...recipe} difficulty="easy" />
                         ))}
