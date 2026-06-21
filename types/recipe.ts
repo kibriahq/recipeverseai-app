@@ -13,4 +13,10 @@ export type RecipeType = {
     cuisine: string;
     tags: string;
     user_id: string;
+    profiles?: {
+        id: string;
+        name: string;
+        username: string;
+        avatar: string;
+    }
 }

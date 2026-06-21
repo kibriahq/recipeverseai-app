@@ -1,7 +1,3 @@
-import AiIntro from "@/components/HomePage/AiIntro";
-import Features from "@/components/HomePage/Features/Features";
-import SleekSaasHero from "@/components/HomePage/Hero";
-import Recipes from "@/components/HomePage/Recipes";
 import RecipeCard from "@/components/RecipeCard";
 import { createSupabaseServerClient } from "@/lib/supabase/server-client";
 
