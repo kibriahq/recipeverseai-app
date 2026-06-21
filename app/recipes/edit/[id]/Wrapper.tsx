@@ -307,7 +307,7 @@ const EditWrapper = ({ id, recipe, user }: { id: string, recipe: RecipeType, use
                                 <Button onClick={() => router.back()} variant="outline" type="button" className="h-10 px-5 font-medium border-border/80">
                                     Cancel
                                 </Button>
-                                <Button type="submit" disabled={loading} className="h-10 px-6 font-semibold bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-1.5 shadow-md hover:shadow-lg transition-all active:translate-y-[1px]">
+                                <Button type="submit" disabled={loading} className="h-10 px-6 font-semibold bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-1.5 shadow-md hover:shadow-lg transition-all active:translate-y-px">
                                     {loading ? (
                                         <>
                                             <Loader2 className="h-4 w-4 animate-spin" />
