@@ -60,7 +60,7 @@ const Sidebar = () => {
                             </Link>
                         </li>
                         <li className="mb-1">
-                            <Link href="/" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
+                            <Link href="/profile/recipes/add" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
                                 <BookmarkPlus size={20} className='font-boldbold' />
                                 <span className='font-semibold'>Add Recipe</span>
                             </Link>
@@ -77,21 +77,40 @@ const Sidebar = () => {
                                 <span className='font-semibold'>Assistant</span>
                             </Link>
                         </li>
-                        <li className="mb-1">
-                            <Link href="/profile" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
-                                <User size={20} className='font-boldbold' />
-                                <span className='font-semibold'>Profile</span>
-                            </Link>
-                        </li>
+                        {isAuth ? (
+                            <li className="mb-1">
+                                <Link href="/profile" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
+                                    <User size={20} className='font-boldbold' />
+                                    <span className='font-semibold'>Profile</span>
+                                </Link>
+                            </li>
+                        ) : (
+                            <li className="mb-1">
+                                <Link href="/login" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
+                                    <User size={20} className='font-boldbold' />
+                                    <span className='font-semibold'>Login</span>
+                                </Link>
+                            </li>
+                        )}
                     </ul>
 
-                    <div className="mb-1 mt-auto pb-2">
-                        <div className="border-t border-secondary-text/20 mx-3 pt-2"></div>
-                        <Link href="/" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-red-500 border-r-2 border-transparent hover:border-red-500 py-2 px-3 rounded-none transition-all duration-150'>
-                            <LogOut size={20} className='font-boldbold' />
-                            <span className='font-semibold'>Logout</span>
-                        </Link>
-                    </div>
+                    {isAuth ? (
+                        <div className="mb-1 mt-auto pb-2">
+                            <div className="border-t border-secondary-text/20 mx-3 pt-2"></div>
+                            <Link href="/" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-red-500 border-r-2 border-transparent hover:border-red-500 py-2 px-3 rounded-none transition-all duration-150'>
+                                <LogOut size={20} className='font-boldbold' />
+                                <span className='font-semibold'>Logout</span>
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className="mb-1 mt-auto pb-2">
+                            <div className="border-t border-secondary-text/20 mx-3 pt-2"></div>
+                            <Link href="/signup" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
+                                <User size={20} className='font-boldbold' />
+                                <span className='font-semibold'>Create Account</span>
+                            </Link>
+                        </div>
+                    )}
                 </nav>
             </aside>
         </>

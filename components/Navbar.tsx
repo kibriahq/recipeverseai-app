@@ -17,7 +17,7 @@ const Navbar = () => {
                         </InputGroupAddon>
                     </InputGroup>
 
-                    <Link href="/login">
+                    <Link href="/profile/recipes/add">
                         <Button variant="hero" className='px-6 py-5 rounded-xl'>
                             <Plus size={20} /> Add Recipes
                         </Button>

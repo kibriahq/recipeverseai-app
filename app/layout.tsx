@@ -41,8 +41,8 @@ export default function RootLayout({
             <div className="px-5 md:px-10">
               {children}
             </div>
+          <Footer />
           </div>
-          {/* <Footer /> */}
 
           <AiButton />
           <ToastContainer position="bottom-right" />
