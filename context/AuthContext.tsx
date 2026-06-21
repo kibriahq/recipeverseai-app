@@ -1,13 +1,21 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User, Session } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client';
 
 const supabase = getSupabaseBrowserClient();
 
+type UserType = {
+  id: string;
+  email: string;
+  name: string;
+  username: string;
+  avatar: string;
+}
+
 interface AuthContextType {
-  user: User | null;
+  user: UserType | null;
   session: Session | null;
   loading: boolean;
   isAuth: boolean;
@@ -19,7 +27,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserType | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isAuth, setIsAuth] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
@@ -47,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((_, session) => {
       setIsAuth(true)
-      setUser(session?.user ?? null);
+      setUser(session?.user as any ?? null);
       setSession(session);
       setLoading(false);
     })
@@ -58,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const setAuth = (session: Session) => {
     setIsAuth(true);
     setSession(session);
-    setUser(session?.user ?? null);
+    setUser(session?.user as any ?? null);
     setLoading(false);
   }
 

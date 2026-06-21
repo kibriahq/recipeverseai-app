@@ -18,8 +18,7 @@ const ProfileStats = ({ value, title }: { value: number, title: string }) => {
 }
 const Sidebar = () => {
     const { user, isAuth } = useAuth();
-    console.log(isAuth);
-    
+
 
     return (
         <>
