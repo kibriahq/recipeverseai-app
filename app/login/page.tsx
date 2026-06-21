@@ -1,11 +1,15 @@
+"use client";
+
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import useAuth from '@/hooks/useAuth';
 import { Lock, Mail, Search, User } from 'lucide-react'
 import Link from 'next/link'
-import React from 'react'
+
 
 const Page = () => {
+    const { onLoginSubmit, register, errors, handleSubmit, loading } = useAuth();
     return (
         <main className="h-screen flex items-center justify-center">
             <div className="h-72 w-full bg-primary/10 -skew-y-6 absolute -top-5 left-0 right-0"></div>
@@ -15,27 +19,29 @@ const Page = () => {
                     <CardDescription className='text-center text-sm'>Get access to your account</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form action="">
+                    <form onSubmit={handleSubmit(onLoginSubmit)}>
                         <div className="grid gap-3 w-full">
 
                             <InputGroup className="rounded-sm h-10">
-                                <InputGroupInput placeholder="Email Address" />
+                                <InputGroupInput placeholder="Email Address" {...register("email", { required: "Email is required" })} />
                                 <InputGroupAddon>
                                     <Mail />
                                 </InputGroupAddon>
                             </InputGroup>
+                            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
                             <InputGroup className="rounded-sm h-10">
-                                <InputGroupInput placeholder="Password" />
+                                <InputGroupInput placeholder="Password" {...register("password", { required: "Password is required" })} type='password' />
                                 <InputGroupAddon>
                                     <Lock />
                                 </InputGroupAddon>
                             </InputGroup>
+                            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
 
                             <div className="flex w-full items-center justify-between flex-row-reverse">
                                 <p className="text-primary-text text-sm font-semibold">Forgot Password?</p>
                                 <p className="text-primary-text text-left">Don't have an account? <Link href="/signup" className="text-primary">Sign up</Link></p>
                             </div>
-                            <Button variant="hero" className="w-full rounded-sm h-10 mb-2">Login</Button>
+                            <Button variant="hero" className="w-full rounded-sm h-10 mb-2" disabled={loading}>{loading ? "Login..." : "Login"}</Button>
                         </div>
                     </form>
                 </CardContent>

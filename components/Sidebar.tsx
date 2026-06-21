@@ -1,8 +1,12 @@
+"use client"
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
 import { Astroid, BookmarkPlus, LayoutPanelLeft, LogOut, Plus, Search, User } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useAuth } from '@/context/AuthContext'
+import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client'
 
 const ProfileStats = ({ value, title }: { value: number, title: string }) => {
     return (
@@ -13,25 +17,29 @@ const ProfileStats = ({ value, title }: { value: number, title: string }) => {
     )
 }
 const Sidebar = () => {
+    const { user, isAuth } = useAuth();
+    console.log(isAuth);
+    
+
     return (
         <>
-        <div className="hidden md:block w-64 min-w-64"></div>
+            <div className="hidden md:block w-64 min-w-64"></div>
             <aside className="hidden md:flex fixed top-0 left-0 bottom-0 w-64 min-w-64 h-screen bg-surface flex-col items-center overflow-y-auto">
                 <div className="py-2 px-4">
                     <Image src="/logo.png" alt="Logo" width={200} height={50} className="w-fit h-10" />
                 </div>
-                <Card className="bg-transparent ring-0 w-full">
+                {isAuth && user ? <Card className="bg-transparent ring-0 w-full">
                     <CardHeader className="flex flex-col items-center justify-center text-center z-20 pt-6">
                         <Image
-                            src="https://picsum.photos/200"
+                            src={user.avatar ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${user?.avatar}` : "/avatar.png"}
                             height={85}
                             width={85}
                             alt='Profile Pic'
                             className='rounded-full ring-3 border-4 border-white ring-primary'
                         />
                         <div className="flex flex-col items-center justify-center pt-2">
-                            <CardTitle className="font-semibold text-xl text-primary-text">Sarah Johnson</CardTitle>
-                            <h2 className="text-secondary-text text-xs leading-4">@sarahjohnson</h2>
+                            <CardTitle className="font-semibold text-xl text-primary-text">{user.name}</CardTitle>
+                            <h2 className="text-secondary-text text-xs leading-4">@{user.username}</h2>
                         </div>
                     </CardHeader>
                     <CardContent className="flex justify-around py-2 w-full">
@@ -40,7 +48,9 @@ const Sidebar = () => {
                         <ProfileStats value={8} title="Following" />
                     </CardContent>
                     {/* <Button variant="default" size="lg">Edit Profile</Button> */}
-                </Card>
+                </Card> : <div className="flex flex-col items-center justify-center text-center z-20 pt-6">
+
+                </div>}
 
                 <nav className="flex flex-col flex-1 w-full pl-2">
                     <ul className='w-full'>
