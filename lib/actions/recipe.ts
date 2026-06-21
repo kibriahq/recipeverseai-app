@@ -1,0 +1,163 @@
+"use server";
+
+import { Ingredient } from "@/components/recipe/Ingredients";
+import type { PreparationStep } from "@/components/recipe/PreparationSteps";
+import { createSupabaseServerClient } from "../supabase/server-client";
+
+type Recipe = {
+  title: string;
+  description: string;
+  cover_img: File | undefined | null;
+  ingredients: Ingredient[];
+  preparation_steps: PreparationStep[];
+  preparation_time: string;
+  cooking_time: string;
+  servings: string;
+  difficulty: string;
+  cuisine: string;
+  tags: string;
+};
+
+export async function createRecipe({
+  title,
+  description,
+  cover_img,
+  ingredients,
+  preparation_steps,
+  preparation_time,
+  cooking_time,
+  servings,
+  difficulty,
+  cuisine,
+  tags,
+}: Recipe) {
+  const supabase = await createSupabaseServerClient();
+  const { data, error: authError } = await supabase.auth.getUser();
+  const userId = data.user?.id;
+
+  if (authError || !userId) {
+    return { error: "You are not logged in!" };
+  }
+
+  let imgPath = null;
+
+  // save image
+  if (cover_img) {
+    const fileName = `${Date.now()}-${cover_img.name}`;
+
+    const { data: result, error: uploadError } = await supabase.storage
+      .from("covers")
+      .upload(fileName, cover_img);
+
+    if (uploadError) {
+      throw new Error(uploadError.message);
+    }
+
+    imgPath = result.fullPath;
+  }
+
+  // save data
+  const { data: recipe, error } = await supabase
+    .from("recipes")
+    .insert({
+      title,
+      description,
+      ingredients: JSON.stringify(ingredients),
+      preparation_steps: JSON.stringify(preparation_steps),
+      user_id: userId,
+      preparation_time,
+      cover_img: imgPath,
+      cooking_time,
+      servings,
+      difficulty,
+      cuisine,
+      tags,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return { success: true, recipe };
+}
+
+export const updateRecipe = async (
+  id: string,
+  {
+    title,
+    description,
+    cover_img,
+    ingredients,
+    preparation_steps,
+    preparation_time,
+    cooking_time,
+    servings,
+    difficulty,
+    cuisine,
+    tags,
+  }: Recipe,
+) => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error: authError } = await supabase.auth.getUser();
+  const userId = data.user?.id;
+
+  const {data: oldRecipe, error: fetchError} = await supabase.from("recipes").select("*").eq("id", id).single();
+
+  if (fetchError) {
+    throw new Error(fetchError.message);
+  }
+
+  if (authError || !userId || oldRecipe.user_id !== userId) {
+    throw new Error("You are not logged in!");
+  }
+
+  let imgPath = oldRecipe.cover_img;
+
+  // save image
+  if (cover_img) {
+    const fileName = `${Date.now()}-${cover_img.name}`;
+
+    const { data: result, error: uploadError } = await supabase.storage
+      .from("covers")
+      .upload(fileName, cover_img);
+
+    if (uploadError) {
+      throw new Error(uploadError.message);
+    }
+
+    imgPath = result.fullPath;
+
+    // delete old image
+    if (oldRecipe.cover_img) {
+      const { error: deleteError } = await supabase.storage
+        .from("covers")
+        .remove([oldRecipe.cover_img]);
+      if (deleteError) {
+        throw new Error(deleteError.message);
+      }
+    }
+  }
+
+  const {error} = await supabase.from("recipes").update({
+    title,
+    description,
+    ingredients: JSON.stringify(ingredients),
+    preparation_steps: JSON.stringify(preparation_steps),
+    user_id: userId,
+    preparation_time,
+    cover_img: imgPath,
+    cooking_time,
+    servings,
+    difficulty,
+    cuisine,
+    tags,
+  }).eq("id", id).select();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return { success: true };
+};
