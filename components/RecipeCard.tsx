@@ -10,7 +10,7 @@ import RecipeDeleteBtn from './ui/RecipeDeleteBtn'
 const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }) => {
 
     return (
-        <Link href={`/recipes/${recipe.id}`}>
+        // <Link href={`/recipes/${recipe.id}`}>
             <Card key={recipe.id} className="bg-surface/50 hover:bg-surface/70 transition-colors pt-0 gap-2 group">
                 <CardHeader className="p-0 relative">
                     <div className="p-0 relative overflow-hidden h-48">
@@ -24,7 +24,9 @@ const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }
                     </div>
                     <div className="px-5 py-3">
                         <p className='text-primary'>{recipe.cuisine}</p>
-                        <CardTitle className="text-lg font-semibold text-primary-text">{recipe.title}</CardTitle>
+                        <Link href={`/recipes/${recipe.id}`}>
+                            <CardTitle className="text-lg font-semibold text-primary-text">{recipe.title}</CardTitle>
+                        </Link>
                         <Link href={`/users/${recipe.profiles?.username}`}>
                             <CardDescription className="text-xs flex items-center gap-2 mt-2">
                                 <Image src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${recipe.profiles?.avatar}`} width={20} height={20} alt="Chef hat" className="h-5 w-5 rounded-full" />
@@ -62,7 +64,7 @@ const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }
                     </CardFooter>
                 )}
             </Card>
-        </Link >
+        // {/* </Link > */}
     )
 }
 
