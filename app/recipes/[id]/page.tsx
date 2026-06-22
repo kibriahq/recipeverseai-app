@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { RecipeType } from '@/types/recipe';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
+import FavBtn from '@/components/RecipeCard/FavBtn';
 
 
 const TimeCard = ({ value, title, icon, className }: { value: string, title: string, icon: any, className?: string }) => {
@@ -53,7 +54,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
     const { id } = await params;
 
     const { data: recipeData } = await supabase.from('recipes').select('*').eq('id', id).single();
-    if(!recipeData) {
+    if (!recipeData) {
         notFound()
     }
     const { data: profileData } = await supabase.from('profiles').select('*').eq('id', recipeData.user_id).single();
@@ -85,7 +86,10 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
 
                 <Card className="px-5 py-6 relative h-fit w-full gap-2 rounded-sm ring-0 shadow">
                     <CardHeader className="">
-                        <CardTitle className="text-primary-text font-semibold text-xl">{recipe.title}</CardTitle>
+                        <div className="flex justify-between">
+                            <CardTitle className="text-primary-text font-semibold text-xl">{recipe.title}</CardTitle>
+                            <FavBtn recipe={recipe} />
+                        </div>
                         <div className="text-xs flex items-center gap-2 mt-2">
                             <Link href={`/users/${profileData.username}`} >
                                 <Image src="/avatar.png" width={30} height={30} alt="Chef hat" className="h-8 w-8 rounded-full" />
@@ -148,35 +152,40 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
                 </Card>
 
                 <div className="grid lg:grid-cols-5 gap-5 ">
-                    <Card className='lg:col-span-3 rounded-sm ring-0 shadow p-3'>
-                        <CardHeader className='pt-2 pb-3'>
-                            <CardTitle className='flex gap-2 text-xl text-primary'><HandPlatter /> Preparations</CardTitle>
-                        </CardHeader>
-                        <CardContent className='flex flex-col gap-2 pb-4'>
-                            {steps?.map((stp: any) => (
-                                <PreparatonStep
-                                    key={stp.id}
-                                    step={stp.stepNumber.toString().length < 2 ? `0${stp.stepNumber}` : stp.stepNumber}
-                                    title={stp.title}
-                                    description={stp.description} />
-                            ))}
-                        </CardContent>
-                    </Card>
-                    <Card className='lg:col-span-2 rounded-sm ring-0 shadow p-3'>
-                        <CardHeader className='pt-2 pb-3'>
-                            <CardTitle className='flex gap-2 text-xl text-primary'><Sailboat /> Ingradients</CardTitle>
-                        </CardHeader>
-                        <CardContent className='flex flex-col gap-2 pb-4'>
-                            {ingredients.map((ing: any) => (
-                                <IngredientStep
-                                    key={ing.id}
-                                    name={ing.name}
-                                    quantity={ing.quantity}
-                                    unit={ing.unit}
-                                />
-                            ))}
-                        </CardContent>
-                    </Card>
+                    {steps.length > 0 && (
+                        <Card className='lg:col-span-3 rounded-sm ring-0 shadow p-3'>
+                            <CardHeader className='pt-2 pb-3'>
+                                <CardTitle className='flex gap-2 text-xl text-primary'><HandPlatter /> Preparations</CardTitle>
+                            </CardHeader>
+                            <CardContent className='flex flex-col gap-2 pb-4'>
+                                {steps?.map((stp: any) => (
+                                    <PreparatonStep
+                                        key={stp.id}
+                                        step={stp.stepNumber.toString().length < 2 ? `0${stp.stepNumber}` : stp.stepNumber}
+                                        title={stp.title}
+                                        description={stp.description} />
+                                ))}
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {ingredients.length > 0 && (
+                        <Card className='lg:col-span-2 rounded-sm ring-0 shadow p-3'>
+                            <CardHeader className='pt-2 pb-3'>
+                                <CardTitle className='flex gap-2 text-xl text-primary'><Sailboat /> Ingradients</CardTitle>
+                            </CardHeader>
+                            <CardContent className='flex flex-col gap-2 pb-4'>
+                                {ingredients.map((ing: any) => (
+                                    <IngredientStep
+                                        key={ing.id}
+                                        name={ing.name}
+                                        quantity={ing.quantity}
+                                        unit={ing.unit}
+                                    />
+                                ))}
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
             </div>
 
