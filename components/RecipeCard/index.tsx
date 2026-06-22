@@ -30,7 +30,7 @@ const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }
                         </Link>
                         <Link href={`/users/@${recipe.profiles?.username}`}>
                             <CardDescription className="text-xs flex items-center gap-2 mt-2">
-                                <Image src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${recipe.profiles?.avatar}`} width={20} height={20} alt="Chef hat" className="h-5 w-5 rounded-full" />
+                                <Image src={recipe.profiles?.avatar ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${recipe.profiles?.avatar}` : "/avatar.png"} width={20} height={20} alt="Chef hat" className="h-5 w-5 rounded-full" />
                                 <span className='font-semibold text-secondary-text'>{recipe.profiles?.name}</span>
                             </CardDescription>
                         </Link>

@@ -92,7 +92,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
                         </div>
                         <div className="text-xs flex items-center gap-2 mt-2">
                             <Link href={`/users/@${profileData.username}`} >
-                                <Image src="/avatar.png" width={30} height={30} alt="Chef hat" className="h-8 w-8 rounded-full" />
+                                <Image src={user.avatar ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${user?.avatar}` : "/avatar.png"} width={30} height={30} alt="Chef hat" className="h-8 w-8 rounded-full" />
                             </Link>
                             <div className="flex gap-1">
                                 <Link href={`/users/@${profileData.username}`} className='font-semibold text-secondary-text underline'>By {profileData.name}, </Link>

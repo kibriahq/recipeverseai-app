@@ -7,33 +7,21 @@ import RecipeCard from '@/components/RecipeCard';
 import { toast } from 'react-toastify';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
+import { getByUsername } from '@/lib/actions/user';
 
 const ProfileStats = ({ value, title }: { value: number, title: string }) => {
     return (
         <div className="flex flex-col items-center justify-center">
-            <h5 className="text-xl font-semibold text-primary-text/80">{value}</h5>
+            <h5 className="text-xl font-semibold text-primary-text/80">{value < 10 ? `0${value}` : value}</h5>
             <span className="text-secondary-text/80 text-xs">{title}</span>
         </div>
     )
 }
 
-const Page = async ({params}: {params: Promise<{username: string}>}) => {
-    const {username} = await params;
-    // get profile information
-    const supabase = await createSupabaseServerClient();
-    const { data } = await supabase.auth.getUser();
-    const { data: user } = await supabase.from('profiles').select('*').eq('id', data.user?.id).single();
+const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
+    const { username } = await params;
 
-    // const {data: recipesx} = await supabase.from("recipes").select("*").eq("user_id", data.user?.id);
-    const { data: recipes, error } = await supabase
-        .from('recipes')
-        .select(`*,profiles (username,name,avatar)`)
-        .eq('user_id', data.user?.id)
-        .order('created_at', { ascending: false });
-
-    if (error) {
-        // throw new Error(error.message)
-    }
+    const { user, recipes } = await getByUsername(username);
 
     return (
         <main className="flex min-h-screen flex-col pb-20 md:pb-10 px-5 md:px-10">
@@ -46,7 +34,7 @@ const Page = async ({params}: {params: Promise<{username: string}>}) => {
 
                         <div className="relative group">
                             <Image
-                                src={'/avatar.png'}
+                                src={user.avatar ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${user?.avatar}` : "/avatar.png"}
                                 height={100}
                                 width={100}
                                 alt='Profile Pic'
@@ -62,7 +50,7 @@ const Page = async ({params}: {params: Promise<{username: string}>}) => {
 
                     </CardHeader>
                     <CardContent className="flex justify-around md:justify-start md:gap-10 lg:gap-20 md:pl-[140px]">
-                        <ProfileStats value={24} title="Recipes" />
+                        <ProfileStats value={recipes.length} title="Recipes" />
                         <ProfileStats value={12} title="Followers" />
                         <ProfileStats value={8} title="Following" />
                     </CardContent>
