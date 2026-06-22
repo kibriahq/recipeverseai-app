@@ -48,9 +48,6 @@ const IngredientStep = ({ name, quantity, unit }: { name: string, quantity: stri
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
     // get profile information
     const supabase = await createSupabaseServerClient();
-    const { data } = await supabase.auth.getUser();
-    const { data: user } = await supabase.from('profiles').select('*').eq('id', data.user?.id).single();
-
     const { id } = await params;
 
     const { data: recipeData } = await supabase.from('recipes').select(`*,profiles (username,name,avatar)`).eq('id', id).single();
@@ -102,7 +99,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
                         </div>
                         <div className="flex gap-1 pt-2">
                             {recipe.tags.split(',').map((tag) => (
-                                <Badge variant="default" className='bg-primary/20 text-primary'>{tag.trim()}</Badge>
+                                <Badge variant="default" className='bg-primary/20 text-primary capitalize'>{tag.trim()}</Badge>
                             ))}
                         </div>
                     </CardHeader>

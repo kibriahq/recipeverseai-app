@@ -73,9 +73,9 @@ const Page = () => {
                     preparation_time: data.preparation_time,
                     cooking_time: data.cooking_time,
                     servings: data.servings,
-                    difficulty: data.difficulty,
-                    cuisine: data.cuisine,
-                    tags: data.tags
+                    difficulty: data.difficulty?.toLowerCase(),
+                    cuisine: data.cuisine?.toLowerCase(),
+                    tags: data.tags?.toLowerCase()
                 }
             )
             toast.success("Recipe created successfully!")

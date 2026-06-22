@@ -24,7 +24,7 @@ const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }
                         />}
                     </div>
                     <div className="px-5 py-3">
-                        <p className='text-primary'>{recipe.cuisine}</p>
+                        <p className='text-primary capitalize'>{recipe.cuisine}</p>
                         <Link href={`/recipes/${recipe.id}`}>
                             <CardTitle className="text-lg font-semibold text-primary-text">{recipe.title}</CardTitle>
                         </Link>
@@ -37,7 +37,7 @@ const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }
                     </div>
 
 
-                    <Badge className="absolute top-4 right-4">{recipe.difficulty}</Badge>
+                    <Badge className="absolute top-4 right-4 capitalize">{recipe.difficulty}</Badge>
                 </CardHeader>
                 <CardContent className="px-5 mt-auto">
                     <div className="flex items-center justify-between text-secondary-text">
