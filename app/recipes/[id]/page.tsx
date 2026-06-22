@@ -147,7 +147,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
                             className='lg:hidden'
                             icon={<Layers size={25} className='text-primary' />}
                             title="Steps"
-                            value="4 Steps"
+                            value={`${steps.length} Steps`}
                         />
                     </CardContent>
                 </Card>

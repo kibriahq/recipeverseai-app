@@ -45,7 +45,7 @@ export default function RootLayout({
           </div>
 
           <AiButton />
-          <ToastContainer position="bottom-right" />
+          <ToastContainer position="top-right" />
         </AuthProvider>
       </body>
     </html>
