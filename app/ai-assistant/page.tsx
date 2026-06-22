@@ -14,6 +14,8 @@ type ChatMessage = {
     content: string
 }
 
+type ApiChatMessage = Pick<ChatMessage, "role" | "content">
+
 const starterPrompts = [
     "What can I cook with chicken, rice, and yogurt?",
     "Make a 20 minute dinner plan for two people.",
@@ -35,13 +37,13 @@ const Page = () => {
     const [error, setError] = useState("")
     const scrollRef = useRef<HTMLDivElement>(null)
 
-    async function askAI(userMessage: string) {
+    async function askAI(userMessage: string, history: ApiChatMessage[]) {
         const res = await fetch("/api/ai", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ message: userMessage }),
+            body: JSON.stringify({ message: userMessage, history }),
         })
 
         const data = await res.json()
@@ -64,13 +66,19 @@ const Page = () => {
             content: trimmedMessage,
         }
 
-        setMessages((currentMessages) => [...currentMessages, userMessage])
+        const nextMessages = [...messages, userMessage]
+        const recentHistory = nextMessages
+            .filter((chatMessage) => chatMessage.id !== welcomeMessage.id)
+            .slice(-10)
+            .map(({ role, content }) => ({ role, content }))
+
+        setMessages(nextMessages)
         setMessage("")
         setError("")
         setIsSending(true)
 
         try {
-            const reply = await askAI(trimmedMessage)
+            const reply = await askAI(trimmedMessage, recentHistory)
             setMessages((currentMessages) => [
                 ...currentMessages,
                 {
@@ -99,11 +107,13 @@ const Page = () => {
     }
 
     useEffect(() => {
-        scrollRef.current?.scrollIntoView({ behavior: "smooth" })
-    }, [messages, isSending])
+        if (isSending) {
+            scrollRef.current?.scrollIntoView({ behavior: "smooth" })
+        }
+    }, [isSending])
 
     return (
-        <main className="flex min-h-[calc(100vh-8rem)] flex-col bg-background px-4 pb-20 pt-20 text-primary-text md:px-10 md:pb-10 md:pt-0">
+        <main className="flex h-[calc(100vh-8rem)] flex-col bg-background px-4 pb-20 pt-20 text-primary-text md:px-10 md:pb-10 md:pt-0">
             <section className="grid flex-1 gap-5 lg:grid-cols-[320px_minmax(0,1fr)]">
                 <aside className="hidden overflow-hidden rounded-md border border-secondary-text/10 bg-white shadow-sm lg:block">
                     <div className="relative h-44">
@@ -156,7 +166,7 @@ const Page = () => {
                     </div>
                 </aside>
 
-                <section className="flex min-h-[calc(100vh-10rem)] flex-col overflow-hidden rounded-md border border-secondary-text/10 bg-white shadow-sm md:min-h-[calc(100vh-7rem)]">
+                <section className="flex h-[calc(100vh-10rem)] flex-col overflow-hidden rounded-md border border-secondary-text/10 bg-white shadow-sm md:min-h-[calc(100vh-7rem)]">
                     <header className="flex items-center justify-between gap-4 border-b border-secondary-text/10 px-4 py-4 md:px-6">
                         <div className="min-w-0">
                             <div className="flex items-center gap-2">
@@ -244,7 +254,7 @@ const Page = () => {
                                 {isSending ? <Loader2 className="animate-spin" /> : <Send />}
                             </Button>
                         </form>
-                        <p className="mx-auto mt-2 max-w-4xl text-xs text-secondary-text">
+                        <p className="hidden md:block mx-auto mt-2 max-w-4xl text-xs text-secondary-text">
                             Press Enter to send. Use Shift + Enter for a new line.
                         </p>
                     </div>
