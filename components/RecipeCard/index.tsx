@@ -14,14 +14,14 @@ const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }
         // <Link href={`/recipes/${recipe.id}`}>
             <Card key={recipe.id} className="bg-surface/50 hover:bg-surface/70 transition-colors pt-0 gap-2 group">
                 <CardHeader className="p-0 relative">
-                    <div className="p-0 relative overflow-hidden h-48">
-                        <Image
+                    <div className="p-0 relative overflow-hidden h-48 bg-primary/10">
+                        {recipe.cover_img && <Image
                             src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${recipe.cover_img}`}
                             alt={recipe.title}
                             width={500}
                             height={300}
                             className="h-48 w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
+                        />}
                     </div>
                     <div className="px-5 py-3">
                         <p className='text-primary'>{recipe.cuisine}</p>

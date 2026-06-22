@@ -76,12 +76,12 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
     return (
         <main className="flex min-h-screen flex-col relative">
             <div className="w-full h-[300px] bg-primary/10 relative overflow-hidden mt-20 md:mt-0">
-                <Image
+                {recipe.cover_img && <Image
                     src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${recipe.cover_img}`}
                     alt="Recipe"
                     fill
                     className="object-cover w-full h-full"
-                />
+                />}
             </div>
             <div className="mx-auto flex flex-col gap-4 mt-30 md:mt-10 px-5 md:px-20 absolute top-30 lg:top-40 w-full pb-20 md:pb-10">
 
