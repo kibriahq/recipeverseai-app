@@ -2,7 +2,7 @@
 
 import { AlertDialog } from 'radix-ui'
 
-import { Button } from './button'
+import { Button } from '../ui/button'
 import { deleteRecipe } from '@/lib/actions/recipe'
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';

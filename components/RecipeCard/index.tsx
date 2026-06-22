@@ -1,11 +1,12 @@
-import { Button } from './ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card'
+import { Button } from '../ui/button'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Heart, Timer } from 'lucide-react'
-import { Badge } from './ui/badge'
+import { Badge } from '@/components/ui/badge'
 import { RecipeType } from '@/types/recipe'
-import RecipeDeleteBtn from './ui/RecipeDeleteBtn'
+import RecipeDeleteBtn from './RecipeDeleteBtn'
+import FavBtn from './FavBtn'
 
 const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }) => {
 
@@ -46,11 +47,7 @@ const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }
                             </span>
                             <span className="pt-0.5 text-xs">{recipe.preparation_time}</span>
                         </div>
-                        <div className="flex items-center gap-1.5 text-rose-500 bg-rose-100 px-2 py-0.5 rounded-full">
-                            {/* <Heart className="h-3.5 w-3.5 fill-rose-500" /> */}
-                            <Heart className="h-3.5 w-3.5" />
-                            <span className="text-xs">{recipe.servings}</span>
-                        </div>
+                        <FavBtn recipe={recipe} />
                     </div>
                 </CardContent>
                 {isEdit && (
