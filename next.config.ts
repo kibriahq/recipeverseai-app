@@ -2,8 +2,13 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["picsum.photos", "gcycltrlitlgdanjziwh.supabase.co"],
-  }
+    domains: ["gcycltrlitlgdanjziwh.supabase.co"],
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "5mb",
+    },
+  },
 };
 
 export default nextConfig;
