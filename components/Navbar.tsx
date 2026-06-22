@@ -36,18 +36,18 @@ const Navbar = () => {
                         </Link>
                     </li>
                     <li className='mx-auto'>
-                        <Link href="/" className='text-sm w-full flex items-center gap-0 text-primary-text/80 hover:text-primary rounded-none transition-all duration-150 flex-col'>
+                        <Link href="/explore" className='text-sm w-full flex items-center gap-0 text-primary-text/80 hover:text-primary rounded-none transition-all duration-150 flex-col'>
                             <Search size={22} className='font-normal' />
                             <span className='font-normal'>Explore</span>
                         </Link>
                     </li>
                     <li className='mx-auto'>
-                        <Link href="/" className='text-sm flex items-center justify-center gap-0 text-white hover:text-primary rounded-full transition-all duration-150 flex-col bg-primary h-11 w-11'>
+                        <Link href="/profile/recipes/add" className='text-sm flex items-center justify-center gap-0 text-white hover:text-primary rounded-full transition-all duration-150 flex-col bg-primary h-11 w-11'>
                             <Plus size={22} className='font-normal' />
                         </Link>
                     </li>
                     <li className='mx-auto'>
-                        <Link href="/" className='text-sm w-full flex items-center gap-0 text-primary-text/80 hover:text-primary rounded-none transition-all duration-150 flex-col'>
+                        <Link href="/ai-assistant" className='text-sm w-full flex items-center gap-0 text-primary-text/80 hover:text-primary rounded-none transition-all duration-150 flex-col'>
                             <Astroid size={22} className='font-normal' />
                             <span className='font-normal'>Assistant</span>
                         </Link>
