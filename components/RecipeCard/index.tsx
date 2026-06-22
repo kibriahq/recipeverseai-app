@@ -28,7 +28,7 @@ const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }
                         <Link href={`/recipes/${recipe.id}`}>
                             <CardTitle className="text-lg font-semibold text-primary-text">{recipe.title}</CardTitle>
                         </Link>
-                        <Link href={`/users/${recipe.profiles?.username}`}>
+                        <Link href={`/users/@${recipe.profiles?.username}`}>
                             <CardDescription className="text-xs flex items-center gap-2 mt-2">
                                 <Image src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${recipe.profiles?.avatar}`} width={20} height={20} alt="Chef hat" className="h-5 w-5 rounded-full" />
                                 <span className='font-semibold text-secondary-text'>{recipe.profiles?.name}</span>

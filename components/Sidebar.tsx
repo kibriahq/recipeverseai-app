@@ -46,7 +46,7 @@ const Sidebar = () => {
                             height={85}
                             width={85}
                             alt='Profile Pic'
-                            className='rounded-full ring-3 border-4 border-white ring-primary'
+                            className='rounded-full ring-3 border-4 border-white ring-primary h-21 w-21'
                         />
                         <div className="flex flex-col items-center justify-center pt-2">
                             <CardTitle className="font-semibold text-xl text-primary-text">{user.name}</CardTitle>
