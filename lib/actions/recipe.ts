@@ -131,9 +131,10 @@ export const updateRecipe = async (
 
     // delete old image
     if (oldRecipe.cover_img) {
+      const path = oldRecipe.cover_img.replace("covers/", "");
       const { error: deleteError } = await supabase.storage
         .from("covers")
-        .remove([oldRecipe.cover_img]);
+        .remove([path]);
       if (deleteError) {
         throw new Error(deleteError.message);
       }
@@ -188,9 +189,11 @@ export const deleteRecipe = async (id: string) => {
   }
 
   if (recipe.cover_img) {
+    const path = recipe.cover_img.replace("covers/", "");
+    
     const { error: deleteError } = await supabase.storage
       .from("covers")
-      .remove([recipe.cover_img]);
+      .remove([path]);
 
     if (deleteError) {
       throw new Error(deleteError.message);

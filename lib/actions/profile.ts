@@ -132,9 +132,11 @@ export async function profileUpload(file: File) {
   }
 
   if (oldUser?.avatar) {
+    const path = oldUser.avatar.replace("avatars/", "");
+
     const { error: deleteError } = await supabase.storage
       .from("avatars")
-      .remove([oldUser.avatar]);
+      .remove([path]);
     
     if (deleteError) {
       throw new Error(deleteError.message);
