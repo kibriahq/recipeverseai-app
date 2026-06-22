@@ -53,11 +53,12 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
 
     const { id } = await params;
 
-    const { data: recipeData } = await supabase.from('recipes').select('*').eq('id', id).single();
+    const { data: recipeData } = await supabase.from('recipes').select(`*,profiles (username,name,avatar)`).eq('id', id).single();
     if (!recipeData) {
         notFound()
     }
-    const { data: profileData } = await supabase.from('profiles').select('*').eq('id', recipeData.user_id).single();
+    
+    const profileData = recipeData.profiles;
 
     const recipe = recipeData as RecipeType;
 
@@ -92,7 +93,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
                         </div>
                         <div className="text-xs flex items-center gap-2 mt-2">
                             <Link href={`/users/@${profileData.username}`} >
-                                <Image src={user.avatar ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${user?.avatar}` : "/avatar.png"} width={30} height={30} alt="Chef hat" className="h-8 w-8 rounded-full" />
+                                <Image src={profileData.avatar ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${profileData?.avatar}` : "/avatar.png"} width={30} height={30} alt="Chef hat" className="h-8 w-8 rounded-full" />
                             </Link>
                             <div className="flex gap-1">
                                 <Link href={`/users/@${profileData.username}`} className='font-semibold text-secondary-text underline'>By {profileData.name}, </Link>
