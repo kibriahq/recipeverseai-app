@@ -9,7 +9,7 @@ import { useAuth } from '@/context/AuthContext'
 
 const ProfileImg = ({ user }: { user: any }) => {
     const { updateUser } = useAuth();
-    const [avatar, setAvatar] = useState(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${user?.avatar}`)
+    const [avatar, setAvatar] = useState(user?.avatar ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${user?.avatar}`: '/avatar.png')
 
     const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]

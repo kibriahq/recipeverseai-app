@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client';
+import { getFollowers, getFollowing, getRecipes } from '@/lib/actions/user';
 
 const supabase = getSupabaseBrowserClient();
 
@@ -19,6 +20,9 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   isAuth: boolean;
+  recipeCount: number;
+  followerCount: number;
+  followingCount: number;
   updateUser: () => void;
   setAuth: (session: Session) => void;
   signOut: () => Promise<void>;
@@ -32,12 +36,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuth, setIsAuth] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
 
+  const [recipeCount, setRecipeCount] = useState(0);
+  const [followerCount, setFollowerCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+
   async function getUser(session: Session) {
     const { data: user } = await supabase.from('profiles').select('*').eq('id', session?.user?.id).single();
     if (user) {
       setUser(user);
       setIsAuth(true);
     }
+  }
+
+  async function setUserCounts(id: string) {
+    const recipes = await getRecipes(id);
+    const followers = await getFollowers(id);
+    const following = await getFollowing(id);
+
+    setRecipeCount(recipes.length);
+    setFollowerCount(followers.length);
+    setFollowingCount(following.length);
   }
 
   useEffect(() => {
@@ -47,6 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
       }
 
+      setUserCounts(session?.user?.id as string)
       setLoading(false);
     });
 
@@ -104,7 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, isAuth, setAuth, updateUser, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, isAuth, recipeCount, followerCount, followingCount, setAuth, updateUser, signOut }}>
       {children}
     </AuthContext.Provider>
   );

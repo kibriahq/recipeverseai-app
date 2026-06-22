@@ -9,12 +9,12 @@ import { toast } from 'react-toastify';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import LogoutBtn from './LogoutBtn';
-import { getOwnProfile } from '@/lib/actions/user';
+import { getFollowers, getFollowing, getOwnProfile } from '@/lib/actions/user';
 
 const ProfileStats = ({ value, title }: { value: number, title: string }) => {
     return (
         <div className="flex flex-col items-center justify-center">
-            <h5 className="text-xl font-semibold text-primary-text/80">{value < 10 ? `0${value}` : value}</h5>
+            <h5 className="text-xl font-semibold text-primary-text/80">{value < 10 && value > 0 ? `0${value}` : value}</h5>
             <span className="text-secondary-text/80 text-xs">{title}</span>
         </div>
     )
@@ -23,6 +23,8 @@ const ProfileStats = ({ value, title }: { value: number, title: string }) => {
 const Page = async () => {
     // get profile information
     const { user, recipes } = await getOwnProfile();
+    const followers = await getFollowers(user.id);
+    const following = await getFollowing(user.id);
 
     return (
         <main className="flex min-h-screen flex-col pb-20 md:pb-10">
@@ -43,8 +45,8 @@ const Page = async () => {
                     </CardHeader>
                     <CardContent className="flex justify-around md:justify-start md:gap-10 lg:gap-20 md:pl-[140px]">
                         <ProfileStats value={recipes.length} title="Recipes" />
-                        <ProfileStats value={12} title="Followers" />
-                        <ProfileStats value={8} title="Following" />
+                        <ProfileStats value={followers?.length} title="Followers" />
+                        <ProfileStats value={following?.length} title="Following" />
                     </CardContent>
                     <div className="flex flex-col sm:flex-row justify-center md:justify-start w-full gap-2 mt-2 md:gap-2 lg:gap-5 md:pl-[140px] lg:pr-[10%]">
                         <Button variant="default" asChild size="sm" className='flex-1 h-10 py-2 text-sm border border-primary'>

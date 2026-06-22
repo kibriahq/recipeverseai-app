@@ -13,13 +13,13 @@ import { toast } from 'react-toastify'
 const ProfileStats = ({ value, title }: { value: number, title: string }) => {
     return (
         <div className="flex flex-col items-center justify-center">
-            <h5 className="text-xl font-semibold text-primary-text/80">{value}</h5>
+            <h5 className="text-xl font-semibold text-primary-text/80">{value < 10 && value > 0 ? `0${value}` : value}</h5>
             <span className="text-secondary-text/80 text-xs">{title}</span>
         </div>
     )
 }
 const Sidebar = () => {
-    const { user, isAuth, signOut } = useAuth();
+    const { user, isAuth, signOut, recipeCount, followerCount, followingCount } = useAuth();
     const router = useRouter();
 
     const handleLogout = async () => {
@@ -54,9 +54,9 @@ const Sidebar = () => {
                         </div>
                     </CardHeader>
                     <CardContent className="flex justify-around py-2 w-full">
-                        <ProfileStats value={24} title="Recipes" />
-                        <ProfileStats value={12} title="Followers" />
-                        <ProfileStats value={8} title="Following" />
+                        <ProfileStats value={recipeCount} title="Recipes" />
+                        <ProfileStats value={followerCount} title="Followers" />
+                        <ProfileStats value={followingCount} title="Following" />
                     </CardContent>
                     {/* <Button variant="default" size="lg">Edit Profile</Button> */}
                 </Card> : <div className="flex flex-col items-center justify-center text-center z-20 pt-6">

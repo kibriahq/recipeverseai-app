@@ -62,3 +62,120 @@ export const getOwnProfile = async () => {
 
   return { user: data, recipes };
 };
+
+export const addFollow = async (followingId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error: authError } = await supabase.auth.getUser();
+  const followerId = data.user?.id;
+
+  if (authError || !followerId) {
+    throw new Error("You are not logged in!");
+  }
+
+  if (followerId === followingId) {
+    throw new Error("You cannot follow yourself!");
+  }
+
+  const { error } = await supabase
+    .from("user_follows")
+    .insert({ follower_id: followerId, following_id: followingId });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return { success: true };
+};
+
+export const getFollowers = async (userId: string) => {
+  const supabase = await createSupabaseServerClient();
+
+  const { data, error } = await supabase
+    .from("user_follows")
+    .select("*")
+    .eq("following_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
+export const getFollowing = async (userId: string) => {
+  const supabase = await createSupabaseServerClient();
+
+  const { data, error } = await supabase
+    .from("user_follows")
+    .select("*")
+    .eq("follower_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
+export const getRecipes = async (userId: string) => {
+  const supabase = await createSupabaseServerClient();
+
+  const { data, error } = await supabase
+    .from("recipes")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
+export const isFollowingUser = async (followingId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error: authError } = await supabase.auth.getUser();
+  const followerId = data.user?.id;
+
+  if (authError || !followerId) {
+    return false;
+  }
+
+  const { data: follow, error } = await supabase
+    .from("user_follows")
+    .select("id")
+    .eq("follower_id", followerId)
+    .eq("following_id", followingId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return Boolean(follow);
+};
+
+export const unFollow = async (followingId: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error: authError } = await supabase.auth.getUser();
+  const followerId = data.user?.id;
+
+  if (authError || !followerId) {
+    throw new Error("You are not logged in!");
+  }
+
+  const { error } = await supabase
+    .from("user_follows")
+    .delete()
+    .eq("follower_id", followerId)
+    .eq("following_id", followingId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return { success: true };
+};

@@ -8,15 +8,8 @@ import { toast } from 'react-toastify';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { getByUsername } from '@/lib/actions/user';
+import FollowAction from './FollowAction';
 
-const ProfileStats = ({ value, title }: { value: number, title: string }) => {
-    return (
-        <div className="flex flex-col items-center justify-center">
-            <h5 className="text-xl font-semibold text-primary-text/80">{value < 10 ? `0${value}` : value}</h5>
-            <span className="text-secondary-text/80 text-xs">{title}</span>
-        </div>
-    )
-}
 
 const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
     const { username } = await params;
@@ -49,23 +42,7 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
                         </div>
 
                     </CardHeader>
-                    <CardContent className="flex justify-around md:justify-start md:gap-10 lg:gap-20 md:pl-[140px]">
-                        <ProfileStats value={recipes.length} title="Recipes" />
-                        <ProfileStats value={12} title="Followers" />
-                        <ProfileStats value={8} title="Following" />
-                    </CardContent>
-                    <div className="flex flex-col sm:flex-row justify-center md:justify-start w-full gap-2 mt-2 md:gap-2 lg:gap-5 md:pl-[140px] lg:pr-[20%]">
-                        <Button variant="default" asChild size="sm" className='flex-1 h-10 py-2 text-sm border border-primary'>
-                            <Link href="/profile/edit">
-                                Follow Now
-                            </Link>
-                        </Button>
-                        {/* <Button variant="outline" size="sm" asChild className='flex-1 h-10 py-2 text-sm text-secondary border-secondary hover:text-white hover:bg-secondary'>
-                            <Link href="/profile/password">
-                                Change Password
-                            </Link>
-                        </Button> */}
-                    </div>
+                    <FollowAction recipesCount={recipes.length} userId={user.id} />
                 </Card>
 
                 {recipes && recipes.length > 0 ? (
