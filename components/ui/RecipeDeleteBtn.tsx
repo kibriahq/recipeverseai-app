@@ -3,10 +3,20 @@
 import { AlertDialog } from 'radix-ui'
 
 import { Button } from './button'
+import { deleteRecipe } from '@/lib/actions/recipe'
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 const RecipeDeleteBtn = ({ id }: { id: string }) => {
-    const handleDelete = () => {
-        console.log(id)
+    const router = useRouter();
+    const handleDelete = async () => {
+        try {
+            await deleteRecipe(id);
+            toast.success("Recipe deleted successfully!");
+            router.refresh();
+        } catch (error: any) {
+            toast.error(error.message);
+        }
     }
 
     return (

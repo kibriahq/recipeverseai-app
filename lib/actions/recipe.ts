@@ -161,3 +161,41 @@ export const updateRecipe = async (
 
   return { success: true };
 };
+
+export const deleteRecipe = async (id: string) => {
+  const supabase = await createSupabaseServerClient();
+  const { data, error: authError } = await supabase.auth.getUser();
+  const userId = data.user?.id;
+
+  const { data: recipe, error: fetchError } = await supabase
+    .from("recipes")
+    .select("user_id, cover_img")
+    .eq("id", id)
+    .single();
+
+  if (fetchError) {
+    throw new Error(fetchError.message);
+  }
+
+  if (authError || !userId || recipe.user_id !== userId) {
+    throw new Error("You are not authorized to delete this recipe!");
+  }
+
+  const { error } = await supabase.from("recipes").delete().eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (recipe.cover_img) {
+    const { error: deleteError } = await supabase.storage
+      .from("covers")
+      .remove([recipe.cover_img]);
+
+    if (deleteError) {
+      throw new Error(deleteError.message);
+    }
+  }
+
+  return { success: true };
+};
