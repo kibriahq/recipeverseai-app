@@ -1,12 +1,9 @@
 "use client"
 import Image from 'next/image'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
-import { Astroid, BookmarkPlus, LayoutPanelLeft, LogOut, Plus, Search, User } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { Astroid, BookmarkPlus, LayoutPanelLeft, LogOut, Search, User } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
-import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 
@@ -36,8 +33,8 @@ const Sidebar = () => {
         <>
             <div className="hidden md:block w-64 min-w-64"></div>
             <aside className="hidden md:flex fixed top-0 left-0 bottom-0 w-64 min-w-64 h-screen bg-surface flex-col items-center overflow-y-auto">
-                <div className="py-2 px-4">
-                    <Image src="/logo.png" alt="Logo" width={200} height={50} className="w-fit h-10" />
+                <div className="pt-3 px-4">
+                    <Link href="/"><Image src="/logo.png" alt="Logo" width={200} height={50} className="w-fit h-11" /></Link>
                 </div>
                 {isAuth && user ? <Card className="bg-transparent ring-0 w-full">
                     <CardHeader className="flex flex-col items-center justify-center text-center z-20 pt-6">
@@ -46,7 +43,7 @@ const Sidebar = () => {
                             height={85}
                             width={85}
                             alt='Profile Pic'
-                            className='rounded-full ring-3 border-4 border-white ring-primary h-21 w-21'
+                            className='rounded-full ring-3 border-2 border-white ring-primary h-21 w-21'
                         />
                         <div className="flex flex-col items-center justify-center pt-2">
                             <CardTitle className="font-semibold text-xl text-primary-text">{user.name}</CardTitle>
