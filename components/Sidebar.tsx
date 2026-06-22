@@ -78,13 +78,13 @@ const Sidebar = () => {
                             </Link>
                         </li>
                         <li className="mb-1">
-                            <Link href="/" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
+                            <Link href="/explore" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
                                 <Search size={20} className='font-boldbold' />
                                 <span className='font-semibold'>Explore</span>
                             </Link>
                         </li>
                         <li className="mb-1">
-                            <Link href="/" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
+                            <Link href="/ai-assistant" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
                                 <Astroid size={20} className='font-boldbold' />
                                 <span className='font-semibold'>Assistant</span>
                             </Link>
