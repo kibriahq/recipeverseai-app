@@ -63,10 +63,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   //   return () => data.subscription.unsubscribe();
   // }, [supabase]);
 
-  const setAuth = (session: Session) => {
-    setIsAuth(true);
+  const setAuth = async (session: Session) => {
+    const { data: user } = await supabase.from('profiles').select('*').eq('id', session?.user?.id).single();
+    if (user) {
+      setUser(user);
+      setIsAuth(true);
+    }
+
     setSession(session);
-    setUser(session?.user as any ?? null);
     setLoading(false);
   }
 
@@ -90,6 +94,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    localStorage.removeItem("sb-access-token");
+    localStorage.removeItem("sb-refresh-token");
+    localStorage.removeItem("sb-refresh-token-ts");
+    setIsAuth(false);
+    setUser(null);
+    setSession(null);
+    setLoading(false);
   };
 
   return (

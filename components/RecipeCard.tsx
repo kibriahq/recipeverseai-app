@@ -5,81 +5,7 @@ import Link from 'next/link'
 import { Heart, Timer } from 'lucide-react'
 import { Badge } from './ui/badge'
 import { RecipeType } from '@/types/recipe'
-
-export const recipes = [
-    {
-        id: 1,
-        title: "Creamy Garlic Butter Shrimp",
-        description: "Succulent shrimp in a rich garlic butter sauce",
-        time: "20 mins",
-        servings: 2,
-        image: "/items/cake.png",
-        slug: "creamy-garlic-butter-shrimp"
-    },
-    {
-        id: 2,
-        title: "Lemon Herb Roasted Chicken",
-        description: "Juicy chicken with lemon and fresh herbs",
-        time: "1 hour",
-        servings: 4,
-        image: "/items/noodles.png",
-        slug: "lemon-herb-roasted-chicken"
-    },
-    {
-        id: 3,
-        title: "Vegetable Stir Fry",
-        description: "Crispy vegetables in a savory sauce",
-        time: "15 mins",
-        servings: 2,
-        image: "/items/spaghetti.png",
-        slug: "vegetable-stir-fry"
-    },
-    {
-        id: 4,
-        title: "Chicken and Broccoli",
-        description: "Tender chicken with crisp broccoli florets",
-        time: "25 mins",
-        servings: 3,
-        image: "/items/ricebowl.png",
-        slug: "chicken-and-broccoli"
-    },
-    {
-        id: 5,
-        title: "Tomato Basil Soup",
-        description: "Classic homemade tomato soup",
-        time: "30 mins",
-        servings: 4,
-        image: "/items/oatmeal.png",
-        slug: "tomato-basil-soup"
-    },
-    {
-        id: 6,
-        title: "Spicy Thai Curry",
-        description: "Aromatic curry with coconut milk and spices",
-        time: "35 mins",
-        servings: 4,
-        image: "/items/pasta.png",
-        slug: "spicy-thai-curry"
-    },
-    {
-        id: 7,
-        title: "Mushroom Risotto",
-        description: "Creamy Arborio rice with earthy mushrooms",
-        time: "40 mins",
-        servings: 3,
-        image: "/items/spaghetti.png",
-        slug: "mushroom-risotto"
-    },
-    {
-        id: 8,
-        title: "Black Bean Burgers",
-        description: "Hearty veggie burgers on a brioche bun",
-        time: "30 mins",
-        servings: 4,
-        image: "/items/burger.png",
-        slug: "black-bean-burgers"
-    }
-];
+import RecipeDeleteBtn from './ui/RecipeDeleteBtn'
 
 const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }) => {
 
@@ -125,16 +51,15 @@ const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }
                         </div>
                     </div>
                 </CardContent>
-                {isEdit && (<CardFooter className="px-5 pb-5 pt-0 border-none">
-                    <Link
-                        href={`/profile/recipes/edit/${recipe.id}`}
-                        className="w-full"
-                    >
-                        <Button size="lg" className="w-full border">
-                            Update Recipe
+                {isEdit && (
+                    <CardFooter className="px-5 pb-5 pt-0 border-none flex gap-1">
+                        <Button size="lg" variant="default" asChild className="flex-1 border">
+                            <Link href={`/profile/recipes/edit/${recipe.id}`}>
+                                Edit Recipe
+                            </Link>
                         </Button>
-                    </Link>
-                </CardFooter>
+                        <RecipeDeleteBtn id={recipe.id} />
+                    </CardFooter>
                 )}
             </Card>
         </Link >

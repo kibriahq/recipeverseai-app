@@ -7,6 +7,8 @@ import { Astroid, BookmarkPlus, LayoutPanelLeft, LogOut, Plus, Search, User } fr
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 const ProfileStats = ({ value, title }: { value: number, title: string }) => {
     return (
@@ -17,8 +19,18 @@ const ProfileStats = ({ value, title }: { value: number, title: string }) => {
     )
 }
 const Sidebar = () => {
-    const { user, isAuth } = useAuth();
+    const { user, isAuth, signOut } = useAuth();
+    const router = useRouter();
 
+    const handleLogout = async () => {
+        try {
+            await signOut();
+            router.push("/login");
+            toast.success("Logout successful");
+        } catch (error) {
+            toast.error("Logout failed");
+        }
+    }
 
     return (
         <>
@@ -97,10 +109,10 @@ const Sidebar = () => {
                     {isAuth ? (
                         <div className="mb-1 mt-auto pb-2">
                             <div className="border-t border-secondary-text/20 mx-3 pt-2"></div>
-                            <Link href="/" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-red-500 border-r-2 border-transparent hover:border-red-500 py-2 px-3 rounded-none transition-all duration-150'>
+                            <p onClick={handleLogout} className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-red-500 border-r-2 border-transparent hover:border-red-500 py-2 px-3 rounded-none transition-all duration-150'>
                                 <LogOut size={20} className='font-boldbold' />
                                 <span className='font-semibold'>Logout</span>
-                            </Link>
+                            </p>
                         </div>
                     ) : (
                         <div className="mb-1 mt-auto pb-2">

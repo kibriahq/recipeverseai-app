@@ -6,6 +6,9 @@ import Link from 'next/link';
 import ProfileImg from './ProfileImg';
 import RecipeCard from '@/components/RecipeCard';
 import { toast } from 'react-toastify';
+import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+import LogoutBtn from './LogoutBtn';
 
 const ProfileStats = ({ value, title }: { value: number, title: string }) => {
     return (
@@ -29,10 +32,9 @@ const Page = async () => {
         .eq('user_id', data.user?.id)
         .order('created_at', { ascending: false });
 
-    if(error) {
+    if (error) {
         // throw new Error(error.message)
     }
-
 
     return (
         <main className="flex min-h-screen flex-col pb-20 md:pb-10">
@@ -56,16 +58,25 @@ const Page = async () => {
                         <ProfileStats value={12} title="Followers" />
                         <ProfileStats value={8} title="Following" />
                     </CardContent>
-                    <div className="flex justify-center md:justify-start w-full gap-2 mt-2 md:gap-2 lg:gap-5 md:pl-[140px]">
-                        <Link href="/profile/edit"><Button variant="default" size="sm" className='w-36 lg:w-64 h-10'>Edit Profile</Button></Link>
-                        <Link href="/profile/password"><Button variant="outline" size="sm" className='w-36 lg:w-64 h-10 text-secondary border-secondary hover:text-white hover:bg-secondary'>Change Password</Button></Link>
+                    <div className="flex flex-col sm:flex-row justify-center md:justify-start w-full gap-2 mt-2 md:gap-2 lg:gap-5 md:pl-[140px] lg:pr-[10%]">
+                        <Button variant="default" asChild size="sm" className='flex-1 h-10 py-2 text-sm border border-primary'>
+                            <Link href="/profile/edit">
+                                Edit Profile
+                            </Link>
+                        </Button>
+                        <Button variant="outline" size="sm" asChild className='flex-1 h-10 py-2 text-sm text-secondary border-secondary hover:text-white hover:bg-secondary'>
+                            <Link href="/profile/password">
+                                Change Password
+                            </Link>
+                        </Button>
+                        <LogoutBtn />
                     </div>
                 </Card>
 
                 {recipes && recipes.length > 0 ? (
                     <div className="grow">
                         <h3 className="text-2xl text-primary-text font-bold my-5 md:my-4">Published Recipes</h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
                             {recipes.map((recipe) => (
                                 <RecipeCard key={recipe.id} recipe={recipe} isEdit={true} />
                             ))}
