@@ -59,7 +59,7 @@ const Page = () => {
                             </InputGroup>
                             {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
 
-                            <p className="text-primary-text">Already have an account? <Link href="/login" className="text-primary">Login</Link></p>
+                            <p className="text-primary-text text-center md:text-left">Already have an account? <Link href="/login" className="text-primary">Login</Link></p>
                             <Button variant="hero" className="w-full rounded-sm h-10 mb-2" disabled={loading}>{loading ? "Creating Account..." : "Create Account"}</Button>
                         </div>
                     </form>

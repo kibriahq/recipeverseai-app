@@ -37,8 +37,7 @@ const Page = () => {
                             </InputGroup>
                             {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
 
-                            <div className="flex w-full items-center justify-between flex-col md:flex-row-reverse">
-                                <p className="text-primary-text text-sm font-semibold">Forgot Password?</p>
+                            <div className="flex w-full items-center justify-end flex-col md:flex-row-reverse">
                                 <p className="text-primary-text text-left">Don't have an account? <Link href="/signup" className="text-primary">Sign up</Link></p>
                             </div>
                             <Button variant="hero" className="w-full rounded-sm h-10 mb-2" disabled={loading}>{loading ? "Login..." : "Login"}</Button>

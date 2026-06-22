@@ -2,7 +2,7 @@ import { Button } from './ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ChevronRight, Heart, Timer } from 'lucide-react'
+import { Heart, Timer } from 'lucide-react'
 import { Badge } from './ui/badge'
 import { RecipeType } from '@/types/recipe'
 
