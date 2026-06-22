@@ -17,7 +17,7 @@ export default async function Home() {
         <h2 className="text-2xl font-bold mb-6 mt-3 text-primary-text">Explore Recipes</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
           {recipes.map((recipe) => (
-            <RecipeCard recipe={recipe} isEdit={false} />
+            <RecipeCard key={recipe.id} recipe={recipe} isEdit={false} />
           ))}
         </div>
 

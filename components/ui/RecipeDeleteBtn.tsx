@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { Button } from './button'
 
 const RecipeDeleteBtn = ({ id }: { id: string }) => {
@@ -8,7 +7,7 @@ const RecipeDeleteBtn = ({ id }: { id: string }) => {
 
     }
     return (
-        <Button size="lg" variant="destructive" asChild className="flex-1 cursor-pointer">
+        <Button onClick={() => handleDelete} size="lg" variant="destructive" className="flex-1 cursor-pointer">
             Delete Recipe
         </Button>
     )

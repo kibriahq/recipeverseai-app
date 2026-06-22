@@ -58,7 +58,7 @@ const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }
                                 Edit Recipe
                             </Link>
                         </Button>
-                        <RecipeDeleteBtn id={recipe.id} />
+                        <RecipeDeleteBtn id={recipe.id!} />
                     </CardFooter>
                 )}
             </Card>
