@@ -1,17 +1,24 @@
+"use client"
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from './ui/button'
 import { Astroid, Grid, Home, LayoutPanelLeft, Pencil, PencilRuler, Plus, Search, Sparkles, User } from 'lucide-react'
 import { InputGroup, InputGroupAddon, InputGroupInput } from './ui/input-group'
 
 const Navbar = () => {
+    const [searchQuery, setSearchQuery] = useState("");
+    const handleSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            window.location.href = `/explore?q=${searchQuery}`;
+        }
+    }
     return (
         <>
             <nav className='hidden md:block sticky top-0 z-50 w-full bg-white/90 backdrop-blur-lg border-b border-surface/20'>
                 <div className="h-20 flex items-center justify-between text-primary-text px-10">
-                    <InputGroup className="h-10 w-[60%] rounded-full">
-                        <InputGroupInput placeholder="Search Recipes" />
+                    <InputGroup className="h-10 w-[60%] rounded-full px-2">
+                        <InputGroupInput placeholder="Search Recipes" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={handleSubmit} />
                         <InputGroupAddon>
                             <Search />
                         </InputGroupAddon>

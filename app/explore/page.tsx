@@ -7,7 +7,8 @@ import { RecipeType } from '@/types/recipe'
 import { SlidersHorizontal } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 type UserResult = {
     id: string
@@ -29,6 +30,9 @@ const Page = () => {
     const [searchError, setSearchError] = useState('')
 
     const [showFilter, setShowFilter] = useState(false);
+
+    const searchParams = useSearchParams();
+    const query = searchParams.get('q') || '';
 
     const handleSearch = async () => {
         const supabase = getSupabaseBrowserClient();
@@ -85,6 +89,13 @@ const Page = () => {
             setIsLoading(false);
         }
     }
+
+    useEffect(() => {
+        if (query) {
+            setSearchKeyword(query);
+            handleSearch();
+        }
+    }, [query])
 
     return (
         <div className="flex flex-col pt-15 md:pt-0 pb-20 md:pb-10 px-5 md:px-10">
