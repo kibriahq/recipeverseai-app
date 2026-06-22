@@ -1,11 +1,21 @@
 "use client"
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ChefHat, Filter, Search, SlidersHorizontal, Users } from 'lucide-react'
-import { getClientBuildManifest } from 'next/dist/client/route-loader'
+import RecipeCard from '@/components/RecipeCard'
+import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client'
+import { RecipeType } from '@/types/recipe'
+import { SlidersHorizontal } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
 import { useState } from 'react'
+
+type UserResult = {
+    id: string
+    name: string
+    username: string
+    avatar: string | null
+    bio?: string | null
+}
 
 const Page = () => {
     const [searchType, setSearchType] = useState<'recipe' | 'user'>('recipe')
@@ -13,20 +23,72 @@ const Page = () => {
     const [cuisine, setCuisine] = useState('')
     const [difficulty, setDifficulty] = useState('')
 
+    const [recipes, setRecipes] = useState<RecipeType[]>([])
+    const [users, setUsers] = useState<UserResult[]>([])
+    const [isLoading, setIsLoading] = useState(false)
+    const [searchError, setSearchError] = useState('')
+
     const [showFilter, setShowFilter] = useState(false);
 
-    const supabase = getClientBuildManifest();
-
     const handleSearch = async () => {
-        console.log(searchKeyword, searchType, cuisine, difficulty);
-        if (searchType === 'recipe') {
-         
+        const supabase = getSupabaseBrowserClient();
+        const keyword = searchKeyword.trim().replaceAll(',', ' ');
+
+        setIsLoading(true)
+        setSearchError('')
+        setRecipes([])
+        setUsers([])
+
+        try {
+            if (searchType === 'recipe') {
+                let query = supabase
+                    .from('recipes')
+                    .select(`*,profiles (username,name,avatar)`)
+                    .order('created_at', { ascending: false });
+
+                if (keyword) {
+                    query = query.or(`title.ilike.%${keyword}%,description.ilike.%${keyword}%,tags.ilike.%${keyword}%`);
+                }
+
+                if (cuisine.trim()) {
+                    query = query.ilike('cuisine', `%${cuisine.trim()}%`);
+                }
+
+                if (difficulty) {
+                    query = query.eq('difficulty', difficulty);
+                }
+
+                const { data, error } = await query;
+
+                if (error) throw new Error(error.message);
+
+                setRecipes((data || []) as RecipeType[]);
+                return;
+            }
+
+            let query = supabase
+                .from('profiles')
+                .select('id,name,username,avatar,bio');
+
+            if (keyword) {
+                query = query.or(`name.ilike.%${keyword}%,username.ilike.%${keyword}%`);
+            }
+
+            const { data, error } = await query;
+
+            if (error) throw new Error(error.message);
+
+            setUsers((data || []) as UserResult[]);
+        } catch (error) {
+            setSearchError(error instanceof Error ? error.message : 'Search failed');
+        } finally {
+            setIsLoading(false);
         }
     }
 
     return (
         <div className="flex flex-col pt-15 md:pt-0 pb-20 md:pb-10 px-5 md:px-10">
-            <div className="mt-3 mb-6">
+            <div className="mt-3 mb-3">
                 <h2 className="text-2xl font-bold text-primary-text">Find recipes and cooks</h2>
                 <p className="mt-1 max-w-2xl text-sm text-secondary-text">
                     Search across recipes and users, then narrow the feed by cuisine and difficulty.
@@ -48,7 +110,9 @@ const Page = () => {
                         </select>
                     </div>
                 </div>
-                <Button className="h-12 rounded-none px-5 md:px-10 rounded-r-md border order-primary" onClick={handleSearch}>Search</Button>
+                <Button className="h-12 rounded-none px-5 md:px-10 rounded-r-md border order-primary" onClick={handleSearch} disabled={isLoading}>
+                    {isLoading ? 'Searching...' : 'Search'}
+                </Button>
             </div>
 
             <div className="flex justify-between items-center my-1 px-1">
@@ -93,7 +157,62 @@ const Page = () => {
 
             </section>
 
+            {searchError && (
+                <p className="mt-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                    {searchError}
+                </p>
+            )}
 
+            {searchType === 'recipe' && recipes.length > 0 && (
+                <section className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
+                    {recipes.map((recipe) => (
+                        <RecipeCard key={recipe.id} recipe={recipe} isEdit={false} />
+                    ))}
+                </section>
+            )}
+
+            {searchType === 'user' && users.length > 0 && (
+                <section className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
+                    {users.map((user) => (
+                        <Link
+                            key={user.id}
+                            href={`/users/@${user.username}`}
+                            className="flex items-center gap-4 rounded-md border border-secondary-text/10 bg-white p-4 shadow-sm transition-colors hover:bg-surface/50"
+                        >
+                            <Image
+                                src={user.avatar ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${user.avatar}` : "/avatar.png"}
+                                width={56}
+                                height={56}
+                                alt={user.name}
+                                className="h-14 w-14 rounded-full object-cover ring-2 ring-primary/30"
+                            />
+                            <div className="min-w-0">
+                                <h3 className="truncate font-semibold text-primary-text">{user.name}</h3>
+                                <p className="truncate text-sm text-secondary-text">@{user.username}</p>
+                                {user.bio && <p className="mt-1 line-clamp-2 text-xs text-secondary-text">{user.bio}</p>}
+                            </div>
+                        </Link>
+                    ))}
+                </section>
+            )}
+
+            {!isLoading && !searchError && searchKeyword && searchType === 'recipe' && recipes.length === 0 && (
+                <div className="flex h-[200px] w-full items-center justify-center pt-10">
+                    <p className="text-secondary-text/80">No recipes found!</p>
+                </div>
+            )}
+
+            {!isLoading && !searchError && searchKeyword && searchType === 'user' && users.length === 0 && (
+                <div className="flex h-[200px] w-full items-center justify-center pt-10">
+                    <p className="text-secondary-text/80">No users found!</p>
+                </div>
+            )}
+
+            {!searchKeyword && (
+                <div className="flex h-[200px] w-full items-center justify-center pt-10">
+                    <p className="text-secondary-text/80">Start typing to search</p>
+                </div>
+            )}
         </div>
     )
 }
