@@ -91,11 +91,11 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
                             <FavBtn recipe={recipe} />
                         </div>
                         <div className="text-xs flex items-center gap-2 mt-2">
-                            <Link href={`/users/${profileData.username}`} >
+                            <Link href={`/users/@${profileData.username}`} >
                                 <Image src="/avatar.png" width={30} height={30} alt="Chef hat" className="h-8 w-8 rounded-full" />
                             </Link>
                             <div className="flex gap-1">
-                                <Link href={`/users/${profileData.username}`} className='font-semibold text-secondary-text underline'>By {profileData.name}, </Link>
+                                <Link href={`/users/@${profileData.username}`} className='font-semibold text-secondary-text underline'>By {profileData.name}, </Link>
                                 <span className='font-semibold text-secondary-text/80'> On {created_at}</span>
                             </div>
                         </div>
