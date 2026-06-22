@@ -38,7 +38,7 @@ export default function RootLayout({
           <Sidebar />
           <div className="w-full relative">
             <Navbar />
-            <div className="px-5 md:px-10">
+            <div className="">
               {children}
             </div>
           <Footer />

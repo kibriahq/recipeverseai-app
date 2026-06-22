@@ -18,7 +18,7 @@ const Page = () => {
     const { register, handleSubmit, errors, loading, onSubmit } = useProfile();
 
     return (
-        <main className="h-screen flex items-center justify-center py-100 md:py-0">
+        <main className="flex items-center justify-center py-30 md:py-20">
             <div className="h-72 w-full bg-primary/10 -skew-y-6 absolute -top-5 left-0 right-0"></div>
             <Card className="rounded-xl border-surface/20 w-md relative z-10 ">
                 <CardHeader className='py-3'>

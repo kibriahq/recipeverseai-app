@@ -125,7 +125,7 @@ const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }
                         </div>
                     </div>
                 </CardContent>
-                {isEdit ?? <CardFooter className="px-5 pb-5 pt-0 border-none">
+                {isEdit && (<CardFooter className="px-5 pb-5 pt-0 border-none">
                     <Link
                         href={`/profile/recipes/edit/${recipe.id}`}
                         className="w-full"
@@ -135,7 +135,7 @@ const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }
                         </Button>
                     </Link>
                 </CardFooter>
-                }
+                )}
             </Card>
         </Link >
     )

@@ -89,7 +89,7 @@ const Page = () => {
         <main className="flex min-h-screen flex-col bg-muted/30 dark:bg-muted/10 py-8 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
             <div className="mx-auto w-full max-w-4xl flex flex-col gap-6">
 
-                <Card className="border border-border/60 rounded-2xl shadow-xl bg-card overflow-hidden transition-all duration-300">
+                <Card className="border border-border/60 rounded-2xl shadow-xl bg-card overflow-hidden transition-all duration-300 my-12 md:my-0">
                     <CardHeader className="border-b border-border/40 bg-muted/10 px-6 py-6">
                         <div className="flex items-center gap-3">
                             <div className="p-2.5 bg-primary/10 rounded-xl text-primary">
@@ -298,8 +298,6 @@ const Page = () => {
                         </form>
                     </CardContent>
                 </Card>
-
-                <div className="h-[100px]"></div>
             </div>
         </main>
     )

@@ -30,12 +30,12 @@ const Page = async () => {
         .order('created_at', { ascending: false });
 
     if(error) {
-        toast.error(error.message)
+        // throw new Error(error.message)
     }
 
 
     return (
-        <main className="flex min-h-screen flex-col ">
+        <main className="flex min-h-screen flex-col pb-20 md:pb-10">
             <div className="h-72 w-full bg-primary/10 -skew-y-6 absolute top-0 left-0 right-0"></div>
             <div className="container mx-auto flex flex-col gap-4 mt-30 md:mt-10">
                 {/* Profile Card */}
