@@ -24,7 +24,7 @@ import {
     InputGroupInput,
     InputGroupText,
 } from '@/components/ui/input-group';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import Image from 'next/image';
 import { createRecipe } from '@/lib/actions/recipe';
@@ -33,6 +33,7 @@ import { useRouter } from 'next/navigation';
 import { Ingredient } from '@/components/recipe/Ingredients';
 import type { PreparationStep } from '@/components/recipe/PreparationSteps';
 import type { RecipeType } from '@/types/recipe';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const Page = () => {
     const [loading, setLoading] = useState(false);
@@ -44,6 +45,7 @@ const Page = () => {
     const router = useRouter();
 
     const {
+        control,
         register,
         handleSubmit,
         formState: { errors }
@@ -156,11 +158,28 @@ const Page = () => {
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         <Label htmlFor="difficulty" className="text-xs font-semibold text-foreground/80 tracking-wide">Difficulty</Label>
-                                        <Input
-                                            id="difficulty"
-                                            className="h-10 bg-background border-border/80 focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary"
-                                            placeholder="e.g. Easy, Medium, Advanced"
-                                            {...register('difficulty', { required: "Difficulty is required" })}
+                                        <Controller
+                                            name="difficulty"
+                                            control={control}
+                                            rules={{
+                                                required: "Difficulty is required",
+                                            }}
+                                            render={({ field }) => (
+                                                <Select
+                                                    value={field.value}
+                                                    onValueChange={field.onChange}
+                                                >
+                                                    <SelectTrigger className="w-full h-10 py-[18px]">
+                                                        <SelectValue placeholder="Select Difficulty" />
+                                                    </SelectTrigger>
+
+                                                    <SelectContent>
+                                                        <SelectItem value="easy">Easy</SelectItem>
+                                                        <SelectItem value="medium">Medium</SelectItem>
+                                                        <SelectItem value="hard">Hard</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
                                         />
                                         {errors.difficulty && <p className="text-xs text-red-500">{errors.difficulty.message}</p>}
                                     </div>

@@ -88,7 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(user);
       setIsAuth(true);
     }
-
+    setUserCounts(session?.user?.id as string)
     setSession(session);
     setLoading(false);
   }

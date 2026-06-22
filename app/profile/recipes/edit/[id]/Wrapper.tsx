@@ -25,7 +25,7 @@ import {
     InputGroupInput,
     InputGroupText,
 } from '@/components/ui/input-group';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { createRecipe, updateRecipe } from '@/lib/actions/recipe';
@@ -36,6 +36,7 @@ import type { PreparationStep } from '@/components/recipe/PreparationSteps';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client';
 import { RecipeType } from '@/types/recipe';
 import { UserType } from '@/types/user';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 
 const EditWrapper = ({ id, recipe, user }: { id: string, recipe: RecipeType, user: UserType }) => {
@@ -61,11 +62,12 @@ const EditWrapper = ({ id, recipe, user }: { id: string, recipe: RecipeType, use
 
 
     const {
+        control,
         register,
         handleSubmit,
         formState: { errors },
         reset
-    } = useForm<RecipeType>();
+    } = useForm<RecipeType>({defaultValues: {difficulty: recipe.difficulty}});
 
     useEffect(() => {
         reset(recipe);
@@ -183,11 +185,28 @@ const EditWrapper = ({ id, recipe, user }: { id: string, recipe: RecipeType, use
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         <Label htmlFor="difficulty" className="text-xs font-semibold text-foreground/80 tracking-wide">Difficulty</Label>
-                                        <Input
-                                            id="difficulty"
-                                            className="h-10 bg-background border-border/80 focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary"
-                                            placeholder="e.g. Easy, Medium, Advanced"
-                                            {...register('difficulty', { required: "Difficulty is required" })}
+                                        <Controller
+                                            name="difficulty"
+                                            control={control}
+                                            rules={{
+                                                required: "Difficulty is required",
+                                            }}
+                                            render={({ field }) => (
+                                                <Select
+                                                    value={field.value}
+                                                    onValueChange={field.onChange}
+                                                >
+                                                    <SelectTrigger className="w-full h-10 py-[18px]">
+                                                        <SelectValue placeholder="Select Difficulty" />
+                                                    </SelectTrigger>
+
+                                                    <SelectContent>
+                                                        <SelectItem value="easy">Easy</SelectItem>
+                                                        <SelectItem value="medium">Medium</SelectItem>
+                                                        <SelectItem value="hard">Hard</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
                                         />
                                         {errors.difficulty && <p className="text-xs text-red-500">{errors.difficulty.message}</p>}
                                     </div>
