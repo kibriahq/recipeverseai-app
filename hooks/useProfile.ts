@@ -70,7 +70,7 @@ const useProfile = () => {
         router.push("/");
         return;
       }
-      reset(user.data as any);
+      reset({ ...user.data as any, email: data.user?.email });
     };
     fetchUser();
   }, []);
