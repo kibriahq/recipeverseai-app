@@ -16,7 +16,7 @@ const TimeCard = ({ value, title, icon, className }: { value: string, title: str
             {icon}
             <div className="flex flex-col">
                 <span className="text-xs text-primary-text/80 font-light uppercase ">{title}</span>
-                <span className="text-md font-semibold text-primary-text/80 pt-0.5">{value}</span>
+                <span className="text-md font-semibold text-primary-text/80 pt-0.5 capitalize">{value}</span>
             </div>
         </div>
     )

@@ -14,7 +14,7 @@ import FollowAction from './FollowAction';
 const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
     const { username } = await params;
 
-    const { user, recipes } = await getByUsername(username);
+    const { user, recipes, isMe } = await getByUsername(username);
 
     return (
         <main className="flex min-h-screen flex-col pb-20 md:pb-10 px-5 md:px-10">
@@ -42,7 +42,7 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
                         </div>
 
                     </CardHeader>
-                    <FollowAction recipesCount={recipes.length} userId={user.id} />
+                    <FollowAction recipesCount={recipes.length} userId={user.id} isMe={isMe} />
                 </Card>
 
                 {recipes && recipes.length > 0 ? (

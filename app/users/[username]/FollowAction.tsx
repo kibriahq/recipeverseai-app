@@ -16,7 +16,7 @@ const ProfileStats = ({ value, title }: { value: number, title: string }) => {
     )
 }
 
-const FollowAction = ({ recipesCount, userId }: { recipesCount: number, userId: string }) => {
+const FollowAction = ({ recipesCount, userId, isMe }: { recipesCount: number, userId: string, isMe: boolean }) => {
     const [isFollowing, setIsFollowing] = useState(false);
     const [followers, setFollowers] = useState(0);
     const [following, setFollowing] = useState(0);
@@ -66,7 +66,7 @@ const FollowAction = ({ recipesCount, userId }: { recipesCount: number, userId: 
                 setFollowers(followers + 1);
             }
             setIsFollowing(!isFollowing)
-            
+
         } catch (error: any) {
             toast.error(error.message);
         }
@@ -79,11 +79,19 @@ const FollowAction = ({ recipesCount, userId }: { recipesCount: number, userId: 
                 <ProfileStats value={followers} title="Followers" />
                 <ProfileStats value={following} title="Following" />
             </CardContent>
-            <div className="flex flex-col sm:flex-row justify-center md:justify-start w-full gap-2 mt-2 md:gap-2 lg:gap-5 md:pl-[140px] lg:pr-[20%]">
-                <Button onClick={handleFollow} variant="default" size="sm" className={`flex-1 h-10 py-2 text-sm border ${isFollowing ? "border-secondary-text bg-secondary-text hover:bg-secondary-text text-white" : "border-primary"}`}>
-                    {isFollowing ? "Unfollow" : "Follow Now"}
-                </Button>
-            </div>
+            {isMe ? (
+                <div className="flex flex-col sm:flex-row justify-center md:justify-start w-full gap-2 mt-2 md:gap-2 lg:gap-5 md:pl-[140px] lg:pr-[20%]">
+                    <Button asChild variant="outline" size="sm" className={`flex-1 h-10 py-2 text-sm border border-primary text-primary hover:text-primary-foreground hover:bg-primary`}>
+                        <Link href="/profile">Go To Profile</Link>
+                    </Button>
+                </div>
+            ) : (
+                <div className="flex flex-col sm:flex-row justify-center md:justify-start w-full gap-2 mt-2 md:gap-2 lg:gap-5 md:pl-[140px] lg:pr-[20%]">
+                    <Button onClick={handleFollow} variant="default" size="sm" className={`flex-1 h-10 py-2 text-sm border ${isFollowing ? "border-secondary-text bg-secondary-text hover:bg-secondary-text text-white" : "border-primary"}`}>
+                        {isFollowing ? "Unfollow" : "Follow Now"}
+                    </Button>
+                </div>
+            )}
         </>
     )
 }

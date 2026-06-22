@@ -5,6 +5,7 @@ import { createSupabaseServerClient } from "../supabase/server-client";
 
 export const getByUsername = async (username: string) => {
   const supabase = await createSupabaseServerClient();
+  const { data: auth } = await supabase.auth.getUser();
   const normalizedUsername = decodeURIComponent(username).replaceAll("@", "");
 
   const { data, error } = await supabase
@@ -27,9 +28,8 @@ export const getByUsername = async (username: string) => {
     throw new Error(recipesError.message);
   }
 
-  return { user: data, recipes };
+  return { user: data, recipes, isMe: auth.user?.id === data.id };
 };
-
 
 export const getOwnProfile = async () => {
   const supabase = await createSupabaseServerClient();
@@ -37,7 +37,7 @@ export const getOwnProfile = async () => {
   const userId = userData?.user?.id;
 
   if (authError || !userId) {
-    return redirect('/login');
+    return redirect("/login");
   }
 
   const { data, error } = await supabase
