@@ -5,11 +5,13 @@ import { RecipeType } from '@/types/recipe'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import { addFav, getRecipeFavs, isFavRecipe, removeFav } from '@/lib/actions/recipe-fav';
+import { useAuth } from '@/context/AuthContext';
 
 const FavBtn = ({ recipe }: { recipe: RecipeType }) => {
     const [loading, setLoading] = useState(true);
     const [favs, setFavs] = useState<number>(0);
     const [isFav, setIsFav] = useState<boolean>(false);
+    const { isAuth } = useAuth();
 
     async function fetchFavs() {
         try {
@@ -34,6 +36,7 @@ const FavBtn = ({ recipe }: { recipe: RecipeType }) => {
     }, []);
 
     const handleFav = async () => {
+        if (!isAuth) return toast.error("You are not logged in to perform this action");
         setIsFav(!isFav)
         setFavs(isFav ? favs - 1 : favs + 1)
         try {
