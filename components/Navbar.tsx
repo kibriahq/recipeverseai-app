@@ -5,26 +5,35 @@ import React, { useState } from 'react'
 import { Button } from './ui/button'
 import { Astroid, Grid, Home, LayoutPanelLeft, Pencil, PencilRuler, Plus, Search, Sparkles, User } from 'lucide-react'
 import { InputGroup, InputGroupAddon, InputGroupInput } from './ui/input-group'
+import { useAuth } from '@/context/AuthContext'
+import { usePathname, useRouter } from 'next/navigation'
 
 const Navbar = () => {
+    const { defineQ } = useAuth();
     const [searchQuery, setSearchQuery] = useState("");
+    const pathname = usePathname();    
+
+    const router = useRouter();
+
     const handleSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            window.location.href = `/explore?q=${searchQuery}`;
+            defineQ(searchQuery);
+            setSearchQuery('')
+            router.push(`/explore`)
         }
     }
     return (
         <>
             <nav className='hidden md:block sticky top-0 z-50 w-full bg-white/90 backdrop-blur-lg border-b border-surface/20'>
                 <div className="h-20 flex items-center justify-between text-primary-text px-10">
-                    <InputGroup className="h-10 w-[60%] rounded-full px-2">
+                    <InputGroup className={`h-10 w-[60%] rounded-full px-2 ${pathname === "/explore" ? "hidden" : "flex"}`}>
                         <InputGroupInput placeholder="Search Recipes" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={handleSubmit} />
                         <InputGroupAddon>
                             <Search />
                         </InputGroupAddon>
                     </InputGroup>
 
-                    <Link href="/profile/recipes/add">
+                    <Link href="/profile/recipes/add" className='ml-auto'>
                         <Button variant="hero" className='px-6 py-5 rounded-xl'>
                             <Plus size={20} /> Add Recipes
                         </Button>

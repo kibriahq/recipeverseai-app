@@ -23,6 +23,8 @@ interface AuthContextType {
   recipeCount: number;
   followerCount: number;
   followingCount: number;
+  q: string;
+  defineQ: (q: string) => void;
   updateUser: () => void;
   setAuth: (session: Session) => void;
   signOut: () => Promise<void>;
@@ -39,6 +41,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [recipeCount, setRecipeCount] = useState(0);
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
+
+  const [q, setQ] = useState('');
 
   async function getUser(session: Session) {
     const { data: user } = await supabase.from('profiles').select('*').eq('id', session?.user?.id).single();
@@ -111,6 +115,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   //   });
   // }
 
+  const defineQ = (q: string) => {
+    setQ(q);
+  }
+
   const signOut = async () => {
     await supabase.auth.signOut();
     localStorage.removeItem("sb-access-token");
@@ -123,7 +131,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, isAuth, recipeCount, followerCount, followingCount, setAuth, updateUser, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, isAuth, recipeCount, followerCount, followingCount, q, defineQ, setAuth, updateUser, signOut }}>
       {children}
     </AuthContext.Provider>
   );

@@ -9,6 +9,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { useAuth } from '@/context/AuthContext'
 
 type UserResult = {
     id: string
@@ -31,12 +32,11 @@ const Page = () => {
 
     const [showFilter, setShowFilter] = useState(false);
 
-    const searchParams = useSearchParams();
-    const query = searchParams.get('q') || '';
+    const { q, defineQ } = useAuth();
 
     const handleSearch = async () => {
         const supabase = getSupabaseBrowserClient();
-        const keyword = searchKeyword.trim().replaceAll(',', ' ');
+        const keyword = q ? q.trim().replaceAll(',', ' ') : searchKeyword.trim().replaceAll(',', ' ');
 
         setIsLoading(true)
         setSearchError('')
@@ -91,11 +91,12 @@ const Page = () => {
     }
 
     useEffect(() => {
-        if (query) {
-            setSearchKeyword(query);
+        if (q) {
+            setSearchKeyword(q);
             handleSearch();
+            defineQ('');
         }
-    }, [query])
+    }, [])
 
     return (
         <div className="flex flex-col pt-15 md:pt-0 pb-20 md:pb-10 px-5 md:px-10">

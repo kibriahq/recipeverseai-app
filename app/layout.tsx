@@ -14,7 +14,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "RecipeVerse AI",
+  title: "RecipeVerse",
   description: "AI-powered recipe discovery and cooking assistant",
 };
 
