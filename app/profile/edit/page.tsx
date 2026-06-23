@@ -4,15 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupTextarea } from '@/components/ui/input-group'
 import useProfile from '@/hooks/useProfile'
-import { Image, Loader2, Mail, Pencil, User } from 'lucide-react'
-
-type Inputs = {
-    name: string;
-    username: string;
-    email: string;
-    bio: string;
-    avatar: File;
-};
+import { Loader2, Mail, Pencil, User } from 'lucide-react'
 
 const Page = () => {
     const { register, handleSubmit, errors, loading, onSubmit } = useProfile();
@@ -28,13 +20,6 @@ const Page = () => {
                 <CardContent>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="grid gap-3 w-full">
-                            {/* <InputGroup className="rounded-sm h-10">
-                                <InputGroupInput placeholder="Avatar" {...register("avatar", { required: "Avatar is required" })} type='file' />
-                                <InputGroupAddon>
-                                    <Image />
-                                </InputGroupAddon>
-                            </InputGroup>
-                            {errors.avatar && <p className="text-red-500 text-sm">{errors.avatar.message}</p>} */}
                             <InputGroup className="rounded-sm h-10">
                                 <InputGroupInput placeholder="Full Name" {...register("name", { required: "Name is required" })} />
                                 <InputGroupAddon>

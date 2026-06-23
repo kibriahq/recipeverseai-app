@@ -1,6 +1,6 @@
 "use client"
 import { useAuth } from '@/context/AuthContext';
-import { Loader2, Soup, UtensilsCrossed } from 'lucide-react';
+import { Soup } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react'
 import { toast } from 'react-toastify';

@@ -3,8 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
-import { Eye, Loader2, Lock } from 'lucide-react'
-import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
+import { Loader2, Lock } from 'lucide-react'
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -18,7 +17,6 @@ type Inputs = {
 
 
 const Page = () => {
-    const supabase = getSupabaseBrowserClient();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 

@@ -4,7 +4,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server-client';
 import { CircleCheckBig, CookingPot, Earth, HandPlatter, Layers, Puzzle, Sailboat, Timer, User, Users } from 'lucide-react';
 import Image from 'next/image'
 import Link from 'next/link';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import FavBtn from '@/components/RecipeCard/FavBtn';
 import { minsToText } from '@/utils/mins-text';
 import AskAI from './AskAi';

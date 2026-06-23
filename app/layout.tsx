@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
 import AiButton from "@/components/AiButton";
 import { AuthProvider } from "@/context/AuthContext";
@@ -36,7 +35,6 @@ export default function RootLayout({
             <div className="">
               {children}
             </div>
-          <Footer />
           </div>
 
           <AiButton />

@@ -1,6 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server-client";
 import EditWrapper from "./Wrapper";
-import { toast } from "react-toastify";
 import { redirect } from "next/navigation";
 import { UserType } from "@/types/user";
 

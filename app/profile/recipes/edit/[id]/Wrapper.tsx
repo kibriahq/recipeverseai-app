@@ -28,12 +28,11 @@ import {
 import { Controller, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { createRecipe, updateRecipe } from '@/lib/actions/recipe';
+import { updateRecipe } from '@/lib/actions/recipe';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { Ingredient } from '@/components/recipe/Ingredients';
 import type { PreparationStep } from '@/components/recipe/PreparationSteps';
-import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client';
 import { RecipeType } from '@/types/recipe';
 import { UserType } from '@/types/user';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -48,8 +47,6 @@ const EditWrapper = ({ id, recipe, user }: { id: string, recipe: RecipeType, use
     const [coverFile, setCoverFile] = useState<File | null>(null)
 
     const router = useRouter();
-
-    // const supabase = getSupabaseBrowserClient();
 
     if (!recipe) {
         toast.error("Recipe not found")
