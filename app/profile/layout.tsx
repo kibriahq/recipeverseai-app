@@ -11,23 +11,15 @@ const layout = ({ children }: { children: React.ReactNode }) => {
     const router = useRouter();
 
     useEffect(() => {
-        const checkAuth = async () => {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
+        if (!isAuth) {
+            toast.error('Please login to access this page');
+            router.push('/login');
+        }
+    }, [isAuth, router]);
 
-            if (!session) {
-                toast.error("You are not logged in!");
-                router.push("/");
-                return;
-            }
-
-            console.log("Logged in user:", session.user);
-        };
-
-        checkAuth();
-    }, [supabase, router]);
-
+    if (!isAuth) {
+        return null;
+    }
 
     return <div className="px-5 md:px-10">{children}</div>
 }
