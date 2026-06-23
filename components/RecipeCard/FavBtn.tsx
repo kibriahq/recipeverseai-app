@@ -12,7 +12,9 @@ const FavBtn = ({ recipe }: { recipe: RecipeType }) => {
     const [isFav, setIsFav] = useState<boolean>(recipe.isFav!);
     const { isAuth } = useAuth();
 
-    const handleFav = async () => {
+    const handleFav = async (e: React.MouseEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
         if (!isAuth) return toast.error("You are not logged in to perform this action");
         setIsFav(!isFav)
         setFavs(isFav ? favs - 1 : favs + 1)

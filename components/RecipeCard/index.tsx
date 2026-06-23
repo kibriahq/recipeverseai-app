@@ -12,8 +12,9 @@ import { minsToText } from '@/utils/mins-text'
 const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }) => {
 
     return (
-        // <Link href={`/recipes/${recipe.id}`}>
-            <Card key={recipe.id} className="bg-surface/50 hover:bg-surface/70 transition-colors pt-0 gap-2 group">
+
+        <Card key={recipe.id} className="bg-surface/50 hover:bg-surface/70 transition-colors pt-0 gap-2 group">
+            <Link href={`/recipes/${recipe.id}`}>
                 <CardHeader className="p-0 relative">
                     <div className="p-0 relative overflow-hidden h-48 bg-primary/10">
                         {recipe.cover_img && <Image
@@ -51,18 +52,18 @@ const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }
                         <FavBtn recipe={recipe} />
                     </div>
                 </CardContent>
-                {isEdit && (
-                    <CardFooter className="px-5 pb-5 pt-0 border-none flex gap-1">
-                        <Button size="lg" variant="default" asChild className="flex-1 border">
-                            <Link href={`/profile/recipes/edit/${recipe.id}`}>
-                                Edit Recipe
-                            </Link>
-                        </Button>
-                        <RecipeDeleteBtn id={recipe.id!} />
-                    </CardFooter>
-                )}
-            </Card>
-        // {/* </Link > */}
+            </Link >
+            {isEdit && (
+                <CardFooter className="px-5 pb-5 pt-0 border-none flex gap-1">
+                    <Button size="lg" variant="default" asChild className="flex-1 border">
+                        <Link href={`/profile/recipes/edit/${recipe.id}`}>
+                            Edit Recipe
+                        </Link>
+                    </Button>
+                    <RecipeDeleteBtn id={recipe.id!} />
+                </CardFooter>
+            )}
+        </Card>
     )
 }
 
