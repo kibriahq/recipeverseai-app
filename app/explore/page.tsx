@@ -8,9 +8,8 @@ import { Loader2, SlidersHorizontal } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
-import { getAllRecipes } from '@/lib/actions/recipe'
+import { toast } from 'react-toastify'
 
 type UserResult = {
     id: string
@@ -35,10 +34,21 @@ const Page = () => {
 
     const { q, defineQ } = useAuth();
 
+    const supabase = getSupabaseBrowserClient();
+
     const fetchRecipes = async () => {
         setIsLoading(true);
-        const recipes = await getAllRecipes();
-        setRecipes(recipes);
+        const { data: recipes, error } = await supabase
+            .from("recipes")
+            .select(`*,profiles (username,name,avatar)`)
+            .order("created_at", { ascending: false });
+
+        if (error) {
+            toast.error(error.message);
+        } else {
+            setRecipes(recipes);
+        }
+
         setIsLoading(false);
     }
 
@@ -47,7 +57,6 @@ const Page = () => {
     }, []);
 
     const handleSearch = async () => {
-        const supabase = getSupabaseBrowserClient();
         const keyword = q ? q.trim().replaceAll(',', ' ') : searchKeyword.trim().replaceAll(',', ' ');
 
         setIsLoading(true)
