@@ -195,7 +195,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
                     {ingredients.length > 0 && (
                         <Card className='lg:col-span-2 rounded-sm ring-0 shadow p-3'>
                             <CardHeader className='pt-2 pb-3'>
-                                <CardTitle className='flex gap-2 text-xl text-primary'><Sailboat /> Ingradients</CardTitle>
+                                <CardTitle className='flex gap-2 text-xl text-primary'><Sailboat /> Ingredients</CardTitle>
                             </CardHeader>
                             <CardContent className='flex flex-col gap-2 pb-4'>
                                 {ingredients.map((ing: any) => (
