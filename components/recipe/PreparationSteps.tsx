@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -32,8 +32,13 @@ const PreparationSteps = ({ steps, setSteps }: { steps: PreparationStep[], setSt
             description: description.trim(),
         }
 
-        // Add and sort by step number
-        const updatedSteps = [...steps, newStep].sort((a, b) => a.stepNumber - b.stepNumber)
+        const updatedSteps = [
+            ...steps.map(step => ({
+                ...step,
+                stepNumber: step.stepNumber >= num ? step.stepNumber + 1 : step.stepNumber,
+            })),
+            newStep,
+        ].sort((a, b) => a.stepNumber - b.stepNumber)
         setSteps(updatedSteps)
 
         // Auto-increment the next step number
@@ -43,7 +48,15 @@ const PreparationSteps = ({ steps, setSteps }: { steps: PreparationStep[], setSt
     }
 
     const handleRemove = (id: string) => {
-        const filtered = steps.filter(step => step.id !== id)
+        const removedStep = steps.find(step => step.id === id)
+        const filtered = steps
+            .filter(step => step.id !== id)
+            .map(step => ({
+                ...step,
+                stepNumber: removedStep && step.stepNumber > removedStep.stepNumber ? step.stepNumber - 1 : step.stepNumber,
+            }))
+            .sort((a, b) => a.stepNumber - b.stepNumber)
+
         setSteps(filtered)
         // Reset the input step number to match the next logical step
         const maxStep = filtered.reduce((max, s) => s.stepNumber > max ? s.stepNumber : max, 0)
@@ -56,6 +69,10 @@ const PreparationSteps = ({ steps, setSteps }: { steps: PreparationStep[], setSt
             handleAdd()
         }
     }
+
+    useEffect(() => {
+        setStepNumber((steps.length + 1).toString())
+    }, [steps])
 
     return (
         <div className="space-y-3">
