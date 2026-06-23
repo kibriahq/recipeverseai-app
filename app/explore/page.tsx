@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
+import { getAllRecipes } from '@/lib/actions/recipe'
 
 type UserResult = {
     id: string
@@ -33,6 +34,16 @@ const Page = () => {
     const [showFilter, setShowFilter] = useState(false);
 
     const { q, defineQ } = useAuth();
+
+    const fetchRecipes = async () => {
+        const recipes = await getAllRecipes();
+        console.log(recipes);
+        setRecipes(recipes);
+    }
+
+    useEffect(() => {
+        fetchRecipes();
+    }, []);
 
     const handleSearch = async () => {
         const supabase = getSupabaseBrowserClient();
@@ -89,6 +100,18 @@ const Page = () => {
             setIsLoading(false);
         }
     }
+
+    useEffect(() => {
+        const handleKeyPress = (e: KeyboardEvent) => {
+            if (e.key === 'Enter') {
+                handleSearch();
+            }
+        }
+        window.addEventListener('keydown', handleKeyPress);
+        return () => {
+            window.removeEventListener('keydown', handleKeyPress);
+        }
+    }, [searchKeyword, cuisine, difficulty, searchType]);
 
     useEffect(() => {
         if (q) {
@@ -217,12 +240,6 @@ const Page = () => {
             {!isLoading && !searchError && searchKeyword && searchType === 'user' && users.length === 0 && (
                 <div className="flex h-[200px] w-full items-center justify-center pt-10">
                     <p className="text-secondary-text/80">No users found!</p>
-                </div>
-            )}
-
-            {!searchKeyword && (
-                <div className="flex h-[200px] w-full items-center justify-center pt-10">
-                    <p className="text-secondary-text/80">Start typing to search</p>
                 </div>
             )}
         </div>

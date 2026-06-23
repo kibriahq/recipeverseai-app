@@ -18,6 +18,20 @@ type Recipe = {
   tags: string;
 };
 
+export async function getAllRecipes() {
+  const supabase = await createSupabaseServerClient();
+  const { data: recipes, error } = await supabase
+    .from("recipes")
+    .select(`*,profiles (username,name,avatar)`)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return recipes;
+}
+
 export async function createRecipe({
   title,
   description,
@@ -103,7 +117,11 @@ export const updateRecipe = async (
   const { data, error: authError } = await supabase.auth.getUser();
   const userId = data.user?.id;
 
-  const {data: oldRecipe, error: fetchError} = await supabase.from("recipes").select("*").eq("id", id).single();
+  const { data: oldRecipe, error: fetchError } = await supabase
+    .from("recipes")
+    .select("*")
+    .eq("id", id)
+    .single();
 
   if (fetchError) {
     throw new Error(fetchError.message);
@@ -141,20 +159,24 @@ export const updateRecipe = async (
     }
   }
 
-  const {error} = await supabase.from("recipes").update({
-    title,
-    description,
-    ingredients: JSON.stringify(ingredients),
-    preparation_steps: JSON.stringify(preparation_steps),
-    user_id: userId,
-    preparation_time,
-    cover_img: imgPath,
-    cooking_time,
-    servings,
-    difficulty,
-    cuisine,
-    tags,
-  }).eq("id", id).select();
+  const { error } = await supabase
+    .from("recipes")
+    .update({
+      title,
+      description,
+      ingredients: JSON.stringify(ingredients),
+      preparation_steps: JSON.stringify(preparation_steps),
+      user_id: userId,
+      preparation_time,
+      cover_img: imgPath,
+      cooking_time,
+      servings,
+      difficulty,
+      cuisine,
+      tags,
+    })
+    .eq("id", id)
+    .select();
 
   if (error) {
     throw new Error(error.message);
@@ -190,7 +212,7 @@ export const deleteRecipe = async (id: string) => {
 
   if (recipe.cover_img) {
     const path = recipe.cover_img.replace("covers/", "");
-    
+
     const { error: deleteError } = await supabase.storage
       .from("covers")
       .remove([path]);
