@@ -6,3 +6,10 @@ export type UserType = {
     avatar?: string;
     bio?: string;
 }
+
+export type UserWithCountType = UserType & {
+    recipes: number;
+    following: number;
+    followers: number;
+    isFollowing: boolean;
+}

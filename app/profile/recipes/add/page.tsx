@@ -35,6 +35,7 @@ import type { PreparationStep } from '@/components/recipe/PreparationSteps';
 import type { RecipeType } from '@/types/recipe';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import DurationInputGroup from '@/components/DurationInputGroup';
+import { useAuth } from '@/context/AuthContext';
 
 const Page = () => {
     const [loading, setLoading] = useState(false);
@@ -42,6 +43,8 @@ const Page = () => {
     const [ingredients, setIngredients] = useState<Ingredient[]>([])
     const [steps, setSteps] = useState<PreparationStep[]>([])
     const [coverFile, setCoverFile] = useState<File | null>(null)
+
+    const { fetchUser } = useAuth();
 
     const router = useRouter();
 
@@ -80,6 +83,7 @@ const Page = () => {
                 }
             )
             toast.success("Recipe created successfully!")
+            fetchUser();
             router.push('/profile');
         } catch (error: any) {
             toast.error(error.message)

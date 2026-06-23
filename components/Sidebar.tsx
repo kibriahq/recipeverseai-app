@@ -17,7 +17,7 @@ const ProfileStats = ({ value, title }: { value: number, title: string }) => {
 }
 
 const Sidebar = () => {
-    const { user, isAuth, signOut, recipeCount, followerCount, followingCount } = useAuth();
+    const { user, isAuth, signOut } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
 
@@ -53,9 +53,9 @@ const Sidebar = () => {
                         </div>
                     </CardHeader>
                     <CardContent className="flex justify-around py-2 w-full">
-                        <ProfileStats value={recipeCount} title="Recipes" />
-                        <ProfileStats value={followerCount} title="Followers" />
-                        <ProfileStats value={followingCount} title="Following" />
+                        <ProfileStats value={user.recipes} title="Recipes" />
+                        <ProfileStats value={user.followers} title="Followers" />
+                        <ProfileStats value={user.following} title="Following" />
                     </CardContent>
                     {/* <Button variant="default" size="lg">Edit Profile</Button> */}
                 </Card> : <div className="flex flex-col items-center justify-center text-center z-20 pt-6">

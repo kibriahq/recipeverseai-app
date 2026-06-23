@@ -2,8 +2,9 @@
 
 import { Button } from '@/components/ui/button'
 import { CardContent } from '@/components/ui/card'
+import { useAuth } from '@/context/AuthContext'
 import { addFollow, unFollow } from '@/lib/actions/user'
-import { UserType } from '@/types/user'
+import { UserType, UserWithCountType } from '@/types/user'
 import Link from 'next/link'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
@@ -17,15 +18,10 @@ const ProfileStats = ({ value, title }: { value: number, title: string }) => {
     )
 }
 
-type CustomUserType = UserType & {
-    following: number;
-    followers: number;
-    isFollowing: boolean;
-}
-
-const FollowAction = ({ recipesCount, user, isMe }: { recipesCount: number, user: CustomUserType, isMe: boolean }) => {
+const FollowAction = ({ recipesCount, user, isMe }: { recipesCount: number, user: UserWithCountType, isMe: boolean }) => {
     const [isFollowing, setIsFollowing] = useState(user.isFollowing);
     const [followers, setFollowers] = useState(user.followers);
+    const { fetchUser } = useAuth();
 
     const handleFollow = async () => {
         try {
@@ -39,7 +35,7 @@ const FollowAction = ({ recipesCount, user, isMe }: { recipesCount: number, user
                 setFollowers(followers + 1);
             }
             setIsFollowing(!isFollowing)
-
+            fetchUser();
         } catch (error: any) {
             toast.error(error.message);
         }

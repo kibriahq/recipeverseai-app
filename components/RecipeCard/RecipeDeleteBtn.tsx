@@ -6,14 +6,18 @@ import { Button } from '../ui/button'
 import { deleteRecipe } from '@/lib/actions/recipe'
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 const RecipeDeleteBtn = ({ id }: { id: string }) => {
     const router = useRouter();
+    const { fetchUser } = useAuth();
+
     const handleDelete = async () => {
         try {
             await deleteRecipe(id);
             toast.success("Recipe deleted successfully!");
-            router.refresh();
+            fetchUser();
+            router.push('/profile');
         } catch (error: any) {
             toast.error(error.message);
         }

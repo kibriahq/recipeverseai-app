@@ -115,7 +115,7 @@ export const getOwnProfile = async () => {
     throw new Error(error.message);
   }
 
-  const [followersRes, followingRes] = await Promise.all([
+  const [followersRes, followingRes, recipesRes] = await Promise.all([
     // total followers: rows where this user is the one being followed
     supabase
       .from("user_follows")
@@ -127,10 +127,16 @@ export const getOwnProfile = async () => {
       .from("user_follows")
       .select("*", { count: "exact", head: true })
       .eq("follower_id", userId),
+
+    supabase
+      .from("recipes")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", userId)
   ]);
 
   const followersCount = followersRes.count ?? 0;
   const followingCount = followingRes.count ?? 0;
+  const recipeCount = recipesRes.count ?? 0;
 
   // recipe data
   const { data: recipesRaw, error: recipesError } = await supabase
@@ -164,7 +170,10 @@ export const getOwnProfile = async () => {
     isFav: lovedIds.has(recipe.id),
   }));
 
-  return { user: {...data, following: followingCount, followers: followersCount}, recipes };
+  return {
+    user: { ...data, following: followingCount, followers: followersCount, recipes: recipeCount },
+    recipes,
+  };
 };
 
 export const addFollow = async (followingId: string) => {
