@@ -34,6 +34,7 @@ import { Ingredient } from '@/components/recipe/Ingredients';
 import type { PreparationStep } from '@/components/recipe/PreparationSteps';
 import type { RecipeType } from '@/types/recipe';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import DurationInputGroup from '@/components/DurationInputGroup';
 
 const Page = () => {
     const [loading, setLoading] = useState(false);
@@ -205,29 +206,29 @@ const Page = () => {
                                         <span>Timing & Servings</span>
                                     </h3>
 
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div className="flex flex-col gap-2">
                                             <Label htmlFor="preparation_time" className="text-xs font-semibold text-foreground/80 tracking-wide">Prep Time</Label>
-                                            <InputGroup className="h-10 bg-background border-border/80 focus-within:ring-1 focus-within:ring-primary focus-within:border-primary">
-                                                <InputGroupInput
-                                                    id="preparation_time"
-                                                    type="text"
-                                                    placeholder="e.g. 20 Mins"
-                                                    {...register('preparation_time', { required: "Prep time is required" })}
-                                                />
-                                            </InputGroup>
+                                            <DurationInputGroup
+                                                control={control}
+                                                name="preparation_time"
+                                                rules={{
+                                                    validate: (value: any) =>
+                                                        (value && value > 0) || "Prep time is required",
+                                                }}
+                                            />
                                             {errors.preparation_time && <p className="text-xs text-red-500">{errors.preparation_time.message}</p>}
                                         </div>
                                         <div className="flex flex-col gap-2">
                                             <Label htmlFor="cooking_time" className="text-xs font-semibold text-foreground/80 tracking-wide">Cook Time</Label>
-                                            <InputGroup className="h-10 bg-background border-border/80 focus-within:ring-1 focus-within:ring-primary focus-within:border-primary">
-                                                <InputGroupInput
-                                                    id="cooking_time"
-                                                    type="text"
-                                                    placeholder="e.g. 30 Mins"
-                                                    {...register('cooking_time', { required: "Cooking time is required" })}
-                                                />
-                                            </InputGroup>
+                                            <DurationInputGroup
+                                                control={control}
+                                                name="cooking_time"
+                                                rules={{
+                                                    validate: (value: any) =>
+                                                        (value && value > 0) || "Cooking time is required",
+                                                }}
+                                            />
                                             {errors.cooking_time && <p className="text-xs text-red-500">{errors.cooking_time.message}</p>}
                                         </div>
                                     </div>

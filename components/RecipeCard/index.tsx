@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { RecipeType } from '@/types/recipe'
 import RecipeDeleteBtn from './RecipeDeleteBtn'
 import FavBtn from './FavBtn'
+import { minsToText } from '@/utils/mins-text'
 
 const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }) => {
 
@@ -45,7 +46,7 @@ const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }
                             <span className="text-base">
                                 <Timer className="h-4 w-4 text-primary" />
                             </span>
-                            <span className="pt-0.5 text-xs">{recipe.preparation_time}</span>
+                            <span className="pt-0.5 text-xs">{minsToText(Number(recipe.preparation_time) + Number(recipe.cooking_time))}</span>
                         </div>
                         <FavBtn recipe={recipe} />
                     </div>

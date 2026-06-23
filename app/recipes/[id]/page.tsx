@@ -8,6 +8,7 @@ import { RecipeType } from '@/types/recipe';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import FavBtn from '@/components/RecipeCard/FavBtn';
+import { minsToText } from '@/utils/mins-text';
 
 
 const TimeCard = ({ value, title, icon, className }: { value: string, title: string, icon: any, className?: string }) => {
@@ -117,12 +118,12 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
                         <TimeCard
                             icon={<Timer size={25} className='text-primary' />}
                             title="Prep Time"
-                            value={recipe.preparation_time}
+                            value={minsToText(Number(recipe.preparation_time))}
                         />
                         <TimeCard
                             icon={<CookingPot size={25} className='text-primary' />}
                             title="Cook Time"
-                            value={recipe.cooking_time}
+                            value={minsToText(Number(recipe.cooking_time))}
                         />
                         <TimeCard
                             icon={<User size={25} className='text-primary' />}
