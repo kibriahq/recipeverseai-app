@@ -19,7 +19,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
     if (!isAuth) {
         return (
             <div className="h-[calc(100vh-6rem)] flex items-center justify-center">
-                <Loader2 className='animate-spin h-30 w-30 text-secondary-text/30' />
+                <Loader2 className='animate-spin h-15 w-15 sm:h-30 sm:w-30 text-secondary-text/30' />
             </div>
         )
     }

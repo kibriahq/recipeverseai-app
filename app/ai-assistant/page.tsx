@@ -125,7 +125,7 @@ const Page = () => {
 
     return (
         <main className="flex h-[calc(100vh-8rem)] flex-col bg-background px-4 pb-20 pt-20 text-primary-text md:px-10 md:pb-10 md:pt-0">
-            <section className="grid flex-1 gap-5 lg:grid-cols-[320px_minmax(0,1fr)]">
+            <section className="grid flex-1 gap-5 lg:grid-cols-[320px_minmax(0,1fr)] pb-20 sm:pb-0">
                 <aside className="hidden h-[calc(100vh-7rem)] overflow-auto rounded-md border border-secondary-text/10 bg-white shadow-sm lg:block scrollbar-none">
                     <div className="relative h-44">
                         <Image src="/ai.jpg" alt="RecipeVerse AI assistant" fill className="object-cover" priority />
