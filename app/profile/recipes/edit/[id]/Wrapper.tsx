@@ -116,7 +116,7 @@ const EditWrapper = ({ id, recipe, user }: { id: string, recipe: RecipeType, use
     }
 
     return (
-        <main className="flex min-h-screen flex-col bg-muted/30 dark:bg-muted/10 py-8 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+        <main className="flex min-h-screen flex-col bg-muted/30 dark:bg-muted/10 py-8 sm:px-6 md:px-8 lg:px-12 xl:px-16">
             <div className="mx-auto w-full max-w-4xl flex flex-col gap-6">
 
                 <Card className="border border-border/60 rounded-2xl shadow-xl bg-card overflow-hidden transition-all duration-300 my-12 md:my-0">

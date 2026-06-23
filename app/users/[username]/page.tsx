@@ -41,7 +41,12 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
 
                 {recipes && recipes.length > 0 ? (
                     <div className="grow">
-                        <h3 className="text-2xl text-primary-text font-bold my-5 md:my-4">Published Recipes</h3>
+                        <div className="mt-3 mb-4">
+                            <h2 className="text-2xl font-bold text-primary-text">Published Recipes</h2>
+                            <p className="mt-1 max-w-2xl text-sm text-secondary-text">
+                                Recipes published by {user.name}
+                            </p>
+                        </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
                             {recipes.map((recipe) => (
                                 <RecipeCard key={recipe.id} recipe={recipe} isEdit={false} />
