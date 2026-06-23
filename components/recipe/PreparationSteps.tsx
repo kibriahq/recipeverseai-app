@@ -112,7 +112,10 @@ const PreparationSteps = ({ steps, setSteps }: { steps: PreparationStep[], setSt
                         ) : (
                             steps.map((step) => (
                                 <tr key={step.id} className="hover:bg-muted/10 transition-colors group">
-                                    <td className="py-2.5 px-4 font-semibold text-primary">{step.stepNumber}</td>
+                                    <td className="py-2.5 px-4 font-semibold text-primary">
+                                        #
+                                        {/* {step.stepNumber} */}
+                                    </td>
                                     <td className="py-2.5 px-4 font-medium text-foreground">{step.title}</td>
                                     <td className="py-2.5 px-4 text-muted-foreground whitespace-pre-wrap leading-relaxed">{step.description}</td>
                                     <td className="py-2.5 px-4 text-center">
