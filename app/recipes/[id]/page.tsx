@@ -85,10 +85,8 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
 
     let lovedIds = new Set<string>();
 
-    const { data: userData, error: userError } = await supabase.auth.getUser();
-    if (userError || !userData?.user?.id) {
-        return redirect("/login");
-    }
+    const { data: userData } = await supabase.auth.getUser();
+
     if (userData?.user?.id && recipeData) {
         const { data: lovedRows } = await supabase
             .from("recipe_loves")
