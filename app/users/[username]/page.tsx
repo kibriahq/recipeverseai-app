@@ -5,28 +5,28 @@ import { getByUsername } from '@/lib/actions/user';
 import FollowAction from './FollowAction';
 import { createSupabaseServerClient } from '@/lib/supabase/server-client';
 
-// export async function generateMetadata({ params }: { params: Promise<{ username: string }> }) {
-//     const supabase = await createSupabaseServerClient();
-//     const { username } = await params;
+export async function generateMetadata({ params }: { params: Promise<{ username: string }> }) {
+    const supabase = await createSupabaseServerClient();
+    const { username } = await params;
 
-//     const { data: user } = await supabase
-//         .from('profiles')
-//         .select(`name, bio`)
-//         .eq('username', decodeURIComponent(username).replaceAll("@", ""))
-//         .single();
+    const { data: user } = await supabase
+        .from('profiles')
+        .select(`name, bio`)
+        .eq('username', decodeURIComponent(username).replaceAll("@", ""))
+        .single();
 
-//     if (!user) {
-//         return {
-//             title: "RecipeVerse",
-//             description: "AI-powered recipe discovery and cooking assistant",
-//         }
-//     }
+    if (!user) {
+        return {
+            title: "RecipeVerse",
+            description: "AI-powered recipe discovery and cooking assistant",
+        }
+    }
 
-//     return {
-//         title: `${user.name} - RecipeVerse`,
-//         description: user.bio,
-//     }
-// }
+    return {
+        title: `${user.name} - RecipeVerse`,
+        description: user.bio,
+    }
+}
 
 const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
     const { username } = await params;
