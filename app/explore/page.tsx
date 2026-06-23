@@ -7,7 +7,7 @@ import { RecipeType } from '@/types/recipe'
 import { Loader2, SlidersHorizontal } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { toast } from 'react-toastify'
 
@@ -19,6 +19,8 @@ type UserResult = {
     bio?: string | null
 }
 
+const PAGE_SIZE = 12;
+
 const Page = () => {
     const [searchType, setSearchType] = useState<'recipe' | 'user'>('recipe')
     const [searchKeyword, setSearchKeyword] = useState('')
@@ -27,109 +29,116 @@ const Page = () => {
 
     const [recipes, setRecipes] = useState<RecipeType[]>([])
     const [users, setUsers] = useState<UserResult[]>([])
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)      // fresh search / initial load
+    const [isLoadingMore, setIsLoadingMore] = useState(false) // scroll-triggered load
     const [searchError, setSearchError] = useState('')
 
-    const [showFilter, setShowFilter] = useState(false);
+    const [page, setPage] = useState(0)
+    const [hasMore, setHasMore] = useState(true)
 
-    const { q, defineQ } = useAuth();
+    const [showFilter, setShowFilter] = useState(false)
 
-    const supabase = getSupabaseBrowserClient();
+    const { q, defineQ } = useAuth()
+    const supabase = getSupabaseBrowserClient()
+    const sentinelRef = useRef<HTMLDivElement>(null)
 
-    const fetchRecipes = async () => {
-        setIsLoading(true);
-        const { data: recipes, error } = await supabase
-            .from("recipes")
-            .select(`*,profiles (username,name,avatar)`)
-            .order("created_at", { ascending: false });
+    // fetchRecipes + handleSearch  duplicate query
+    const runSearch = useCallback(async (pageNum: number, append: boolean) => {
+        const keyword = q ? q.trim().replaceAll(',', ' ') : searchKeyword.trim().replaceAll(',', ' ')
+        const from = pageNum * PAGE_SIZE
+        const to = from + PAGE_SIZE - 1
 
-        if (error) {
-            toast.error(error.message);
-        } else {
-            setRecipes(recipes);
-        }
-
-        setIsLoading(false);
-    }
-
-    useEffect(() => {
-        fetchRecipes();
-    }, []);
-
-    const handleSearch = async () => {
-        const keyword = q ? q.trim().replaceAll(',', ' ') : searchKeyword.trim().replaceAll(',', ' ');
-
-        setIsLoading(true)
-        setSearchError('')
-        setRecipes([])
-        setUsers([])
+        if (append) setIsLoadingMore(true)
+        else { setIsLoading(true); setSearchError('') }
 
         try {
             if (searchType === 'recipe') {
                 let query = supabase
                     .from('recipes')
                     .select(`*,profiles (username,name,avatar)`)
-                    .order('created_at', { ascending: false });
+                    .order('created_at', { ascending: false })
+                    .range(from, to)
 
-                if (keyword) {
-                    query = query.or(`title.ilike.%${keyword}%,description.ilike.%${keyword}%,tags.ilike.%${keyword}%`);
-                }
+                if (keyword) query = query.or(`title.ilike.%${keyword}%,description.ilike.%${keyword}%,tags.ilike.%${keyword}%`)
+                if (cuisine.trim()) query = query.ilike('cuisine', `%${cuisine.trim()}%`)
+                if (difficulty) query = query.eq('difficulty', difficulty)
 
-                if (cuisine.trim()) {
-                    query = query.ilike('cuisine', `%${cuisine.trim()}%`);
-                }
+                const { data, error } = await query
+                if (error) throw new Error(error.message)
 
-                if (difficulty) {
-                    query = query.eq('difficulty', difficulty);
-                }
+                const newRecipes = (data || []) as RecipeType[]
+                setRecipes(prev => append ? [...prev, ...newRecipes] : newRecipes)
+                setHasMore(newRecipes.length === PAGE_SIZE)
+            } else {
+                let query = supabase
+                    .from('profiles')
+                    .select('id,name,username,avatar,bio')
+                    .range(from, to)
 
-                const { data, error } = await query;
+                if (keyword) query = query.or(`name.ilike.%${keyword}%,username.ilike.%${keyword}%`)
 
-                if (error) throw new Error(error.message);
+                const { data, error } = await query
+                if (error) throw new Error(error.message)
 
-                setRecipes((data || []) as RecipeType[]);
-                return;
+                const newUsers = (data || []) as UserResult[]
+                setUsers(prev => append ? [...prev, ...newUsers] : newUsers)
+                setHasMore(newUsers.length === PAGE_SIZE)
             }
-
-            let query = supabase
-                .from('profiles')
-                .select('id,name,username,avatar,bio');
-
-            if (keyword) {
-                query = query.or(`name.ilike.%${keyword}%,username.ilike.%${keyword}%`);
-            }
-
-            const { data, error } = await query;
-
-            if (error) throw new Error(error.message);
-
-            setUsers((data || []) as UserResult[]);
-        } catch (error) {
-            setSearchError(error instanceof Error ? error.message : 'Search failed');
+            setPage(pageNum)
+        } catch (err) {
+            const message = err instanceof Error ? err.message : 'Search failed'
+            if (append) toast.error(message)
+            else setSearchError(message)
         } finally {
-            setIsLoading(false);
+            setIsLoading(false)
+            setIsLoadingMore(false)
         }
-    }
+    }, [q, searchKeyword, searchType, cuisine, difficulty, supabase])
+
+    // new search/filter means fresh start from page 0
+    const handleSearch = useCallback(() => {
+        setRecipes([])
+        setUsers([])
+        setHasMore(true)
+        runSearch(0, false)
+    }, [runSearch])
+
+    useEffect(() => {
+        handleSearch()
+    }, [])
 
     useEffect(() => {
         const handleKeyPress = (e: KeyboardEvent) => {
-            if (e.key === 'Enter') {
-                handleSearch();
-            }
+            if (e.key === 'Enter') handleSearch()
         }
-        window.addEventListener('keydown', handleKeyPress);
-        return () => {
-            window.removeEventListener('keydown', handleKeyPress);
-        }
-    }, [searchKeyword, cuisine, difficulty, searchType]);
+        window.addEventListener('keydown', handleKeyPress)
+        return () => window.removeEventListener('keydown', handleKeyPress)
+    }, [handleSearch])
 
     useEffect(() => {
         if (q) {
-            setSearchKeyword(q);
-            handleSearch();
-            defineQ('');
+            setSearchKeyword(q)
+            handleSearch()
+            defineQ('')
         }
     }, [])
+
+    // infinite scroll observer
+    useEffect(() => {
+        if (!hasMore || isLoading) return
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting && !isLoadingMore) {
+                    runSearch(page + 1, true)
+                }
+            },
+            { threshold: 0.1 }
+        )
+
+        if (sentinelRef.current) observer.observe(sentinelRef.current)
+        return () => observer.disconnect()
+    }, [hasMore, isLoading, isLoadingMore, page, runSearch])
 
     return (
         <div className="flex flex-col pt-15 md:pt-0 pb-20 md:pb-10 px-5 md:px-10">
@@ -219,16 +228,10 @@ const Page = () => {
             {searchType === 'user' && users.length > 0 && (
                 <section className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
                     {users.map((user) => (
-                        <Link
-                            key={user.id}
-                            href={`/users/@${user.username}`}
-                            className="flex items-center gap-4 rounded-md border border-secondary-text/10 bg-white p-4 shadow-sm transition-colors hover:bg-surface/50"
-                        >
+                        <Link key={user.id} href={`/users/@${user.username}`} className="flex items-center gap-4 rounded-md border border-secondary-text/10 bg-white p-4 shadow-sm transition-colors hover:bg-surface/50">
                             <Image
                                 src={user.avatar ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${user.avatar}` : "/avatar.png"}
-                                width={56}
-                                height={56}
-                                alt={user.name}
+                                width={56} height={56} alt={user.name}
                                 className="h-14 w-14 rounded-full object-cover ring-2 ring-primary/30"
                             />
                             <div className="min-w-0">
@@ -256,6 +259,17 @@ const Page = () => {
             {isLoading && (
                 <div className="flex h-[200px] w-full items-center justify-center pt-10">
                     <Loader2 className='w-8 h-8 animate-spin text-secondary-text' />
+                </div>
+            )}
+
+            {/* scroll sentinel: list er nicher dike pohole next page load hobe */}
+            {hasMore && !isLoading && (recipes.length > 0 || users.length > 0) && (
+                <div ref={sentinelRef} style={{ height: 1 }} />
+            )}
+
+            {isLoadingMore && (
+                <div className="flex justify-center py-6">
+                    <Loader2 className='w-6 h-6 animate-spin text-secondary-text' />
                 </div>
             )}
         </div>
