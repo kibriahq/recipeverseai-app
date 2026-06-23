@@ -1,15 +1,36 @@
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { createSupabaseServerClient } from '@/lib/supabase/server-client';
-import { CircleCheckBig, CookingPot, Earth, HandPlatter, Layers, Puzzle, Sailboat, Timer, User } from 'lucide-react';
+import { CircleCheckBig, CookingPot, Earth, HandPlatter, Layers, Puzzle, Sailboat, Timer, User, Users } from 'lucide-react';
 import Image from 'next/image'
-import { RecipeType } from '@/types/recipe';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import FavBtn from '@/components/RecipeCard/FavBtn';
 import { minsToText } from '@/utils/mins-text';
 import AskAI from './AskAi';
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+    const supabase = await createSupabaseServerClient();
+    const { id } = await params;
+
+    const { data: recipeData } = await supabase
+        .from('recipes')
+        .select(`title, description`)
+        .eq('id', id)
+        .single();
+
+    if (!recipeData) {
+        return {
+            title: "RecipeVerse",
+            description: "AI-powered recipe discovery and cooking assistant",
+        }
+    }
+
+    return {
+        title: `${recipeData.title} - RecipeVerse`,
+        description: recipeData.description,
+    }
+}
 
 
 const TimeCard = ({ value, title, icon, className }: { value: string, title: string, icon: any, className?: string }) => {
@@ -151,7 +172,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
                             value={minsToText(Number(recipe.cooking_time))}
                         />
                         <TimeCard
-                            icon={<User size={25} className='text-primary' />}
+                            icon={<Users size={25} className='text-primary' />}
                             title="Servings"
                             value={`${recipe.servings} People`}
                         />
@@ -175,9 +196,9 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
                     </CardContent>
                 </Card>
 
-                <div className="grid lg:grid-cols-5 gap-5 ">
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-5 ">
                     {steps.length > 0 && (
-                        <Card className='lg:col-span-3 rounded-sm ring-0 shadow p-3'>
+                        <Card className="order-2 lg:order-1 lg:col-span-3 rounded-sm ring-0 shadow p-3">
                             <CardHeader className='pt-2 pb-3'>
                                 <CardTitle className='flex gap-2 text-xl text-primary'><HandPlatter /> Preparations</CardTitle>
                             </CardHeader>
@@ -194,7 +215,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
                     )}
 
                     {ingredients.length > 0 && (
-                        <Card className='lg:col-span-2 rounded-sm ring-0 shadow p-3'>
+                        <Card className='order-1 lg:order-2 lg:col-span-2 rounded-sm ring-0 shadow p-3'>
                             <CardHeader className='pt-2 pb-3'>
                                 <CardTitle className='flex gap-2 text-xl text-primary'><Sailboat /> Ingredients</CardTitle>
                             </CardHeader>
