@@ -51,18 +51,42 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
     const supabase = await createSupabaseServerClient();
     const { id } = await params;
 
-    const { data: recipeData } = await supabase.from('recipes').select(`*,profiles (username,name,avatar)`).eq('id', id).single();
+    const { data: recipeData } = await supabase
+        .from('recipes')
+        .select(`*, profiles (username,name,avatar), recipe_loves(count)`)
+        .eq('id', id)
+        .single();
+
     if (!recipeData) {
         notFound()
     }
-    
-    const profileData = recipeData.profiles;
 
-    const recipe = recipeData as RecipeType;
+    let lovedIds = new Set<string>();
+
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError || !userData?.user?.id) {
+        return redirect("/login");
+    }
+    if (userData?.user?.id && recipeData) {
+        const { data: lovedRows } = await supabase
+            .from("recipe_loves")
+            .select("recipe_id")
+            .eq("user_id", userData.user.id)
+            .eq("recipe_id", recipeData.id)
+
+        lovedIds = new Set(lovedRows?.map((row) => row.recipe_id));
+    }
+
+    const recipe = {
+        ...recipeData,
+        favs: recipeData.recipe_loves?.[0]?.count ?? 0,
+        isFav: lovedIds.has(recipeData.id),
+    }
+
+    const profileData = recipe.profiles;
 
     const steps = JSON.parse(recipe.preparation_steps);
     const ingredients = JSON.parse(recipe.ingredients);
-    console.log(recipe.tags.split(','));
 
     const created_at = new Date(recipe.created_at!).toLocaleDateString("en-GB", {
         day: "numeric",
@@ -99,8 +123,8 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
                             </div>
                         </div>
                         <div className="flex gap-1 pt-2">
-                            {recipe.tags.split(',').map((tag) => (
-                                <Badge variant="default" className='bg-primary/20 text-primary capitalize'>{tag.trim()}</Badge>
+                            {recipe.tags.split(',').map((tag: any) => (
+                                <Badge key={tag} variant="default" className='bg-primary/20 text-primary capitalize'>{tag.trim()}</Badge>
                             ))}
                         </div>
                     </CardHeader>
