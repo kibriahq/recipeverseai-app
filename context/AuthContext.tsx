@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { Session, User } from '@supabase/supabase-js';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client';
 import { getFollowers, getFollowing, getRecipes } from '@/lib/actions/user';
+import { toast } from 'react-toastify';
 
 const supabase = getSupabaseBrowserClient();
 
@@ -53,13 +54,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function setUserCounts(id: string) {
-    const recipes = await getRecipes(id);
-    const followers = await getFollowers(id);
-    const following = await getFollowing(id);
-
-    setRecipeCount(recipes.length);
-    setFollowerCount(followers.length);
-    setFollowingCount(following.length);
+    if(id) {
+      try {
+        const recipes = await getRecipes(id);
+        const followers = await getFollowers(id);
+        const following = await getFollowing(id);
+  
+        setRecipeCount(recipes.length);
+        setFollowerCount(followers.length);
+        setFollowingCount(following.length);
+      } catch (error: any) {
+        toast.error(error.message)
+      }
+    }
   }
 
   useEffect(() => {
@@ -68,12 +75,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         getUser(session)
         setSession(session);
       }
-
-      setUserCounts(session?.user?.id as string)
+      
       setLoading(false);
     });
 
   }, []);
+
+  useEffect(() => {
+    setUserCounts(user?.id!)
+  }, [user]);
 
   // useEffect(() => {
   //   const { data } = supabase.auth.onAuthStateChange((_, session) => {
