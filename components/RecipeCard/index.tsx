@@ -8,6 +8,8 @@ import { RecipeType } from '@/types/recipe'
 import RecipeDeleteBtn from './RecipeDeleteBtn'
 import FavBtn from './FavBtn'
 import { minsToText } from '@/utils/mins-text'
+import Author from './Author'
+import { UserType } from '@/types/user'
 
 const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }) => {
 
@@ -27,15 +29,8 @@ const RecipeCard = ({ recipe, isEdit }: { recipe: RecipeType, isEdit?: boolean }
                     </div>
                     <div className="px-5 py-3">
                         <p className='text-primary capitalize'>{recipe.cuisine}</p>
-                        <Link href={`/recipes/${recipe.id}`}>
-                            <CardTitle className="text-lg font-semibold text-primary-text">{recipe.title}</CardTitle>
-                        </Link>
-                        <Link href={`/users/@${recipe.profiles?.username}`}>
-                            <CardDescription className="text-xs flex items-center gap-2 mt-2">
-                                <Image src={recipe.profiles?.avatar ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${recipe.profiles?.avatar}` : "/avatar.png"} width={20} height={20} alt="Chef hat" className="h-5 w-5 rounded-full" />
-                                <span className='font-semibold text-secondary-text'>{recipe.profiles?.name}</span>
-                            </CardDescription>
-                        </Link>
+                        <CardTitle className="text-lg font-semibold text-primary-text">{recipe.title}</CardTitle>
+                        <Author user={recipe.profiles as UserType} />
                     </div>
 
 

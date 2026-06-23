@@ -36,7 +36,7 @@ const Sidebar = () => {
             <div className="hidden md:block w-64 min-w-64"></div>
             <aside className="hidden md:flex fixed top-0 left-0 bottom-0 w-64 min-w-64 h-screen bg-surface flex-col items-center overflow-y-auto">
                 <div className="pt-3 px-4">
-                    <Link href="/"><Image src="/logo.png" alt="Logo" width={200} height={50} className="w-fit h-11" /></Link>
+                    <Link href="/"><Image src="/logo.png" loading="eager" alt="Logo" width={200} height={50} className="w-fit h-11" /></Link>
                 </div>
                 {isAuth && user ? <Card className="bg-transparent ring-0 w-full">
                     <CardHeader className="flex flex-col items-center justify-center text-center z-20 pt-6">

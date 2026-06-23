@@ -1,6 +1,6 @@
 "use client"
 import { useAuth } from '@/context/AuthContext';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Soup, UtensilsCrossed } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react'
 import { toast } from 'react-toastify';
@@ -19,7 +19,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
     if (!isAuth) {
         return (
             <div className="h-[calc(100vh-6rem)] flex items-center justify-center">
-                <Loader2 className='animate-spin h-15 w-15 sm:h-30 sm:w-30 text-secondary-text/30' />
+                <Soup className='animate-pulse h-15 w-15 sm:h-20 sm:w-20 text-secondary/30' />
             </div>
         )
     }

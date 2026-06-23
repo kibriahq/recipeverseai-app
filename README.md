@@ -1,36 +1,221 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RecipeVerse AI
 
-## Getting Started
+A full-stack web application for AI-powered recipe discovery, management, and cooking assistance. Built with Next.js, Supabase, and Google Gemini AI.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Recipe Feed** — Infinite-scrolling feed of recipes from users you follow
+- **Explore & Search** — Discover recipes and users with filters (cuisine, difficulty, keyword)
+- **Full CRUD Recipes** — Create, edit, and delete recipes with structured ingredients and step-by-step preparation
+- **Favorites** — Save and manage your favorite recipes
+- **Social System** — Follow/unfollow other users and browse their public profiles
+- **AI Cooking Assistant** — Chat with Gemini AI for recipe ideas, substitutions, meal planning, and cooking fixes
+- **User Profiles** — Manage avatar, name, bio, email, and password
+- **Authentication** — Email/password login via Supabase Auth
+
+## Tech Stack
+
+| Layer                  | Technology                                   |
+| ---------------------- | -------------------------------------------- |
+| **Framework**          | Next.js 16 (App Router)                      |
+| **UI Library**         | React 19, TypeScript                         |
+| **Styling**            | Tailwind CSS v4, ShadCN UI / Radix UI        |
+| **State**              | React Context                                |
+| **Forms**              | react-hook-form, Zod                         |
+| **Backend / Database** | Supabase (PostgreSQL, Auth, Storage)         |
+| **AI**                 | Google Generative AI (Gemini 2.5 Flash Lite) |
+| **Package Manager**    | pnpm                                         |
+
+## Prerequisites
+
+- **Node.js** 20+
+- **pnpm** (`npm install -g pnpm`)
+- A **Supabase** project (free tier works)
+- A **Google Gemini API key**
+
+## Environment Variables
+
+Create a `.env.local` file in the project root:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="your-supabase-anon-key"
+
+GEMINI_API_KEY="your-gemini-api-key"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> Copy `.env.example` as a starting template:
+>
+> ```bash
+> cp .env.example .env.local
+> ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Where they are used
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable                               | Purpose                                    |
+| -------------------------------------- | ------------------------------------------ |
+| `NEXT_PUBLIC_SUPABASE_URL`             | Supabase project URL (client & server)     |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase anonymous/public key              |
+| `GEMINI_API_KEY`                       | Google Gemini API key for the AI assistant |
 
-## Learn More
+## Setup
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone the repository**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   git clone https://github.com/kibriahq/recipeverseai-app.git
+   cd recipeverseai-app
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. **Install dependencies**
 
-## Deploy on Vercel
+   ```bash
+   pnpm install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Configure environment variables**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   Fill in your `.env.local` with your Supabase project credentials and Gemini API key.
+
+4. **Run database migrations** (via Supabase Studio or SQL editor)
+
+   The app expects the following tables in your Supabase database:
+
+   **`profiles`** — User profiles
+
+   ```sql
+   create table public.profiles (
+    id uuid not null default gen_random_uuid (),
+    name text null,
+    username text null,
+    email text null,
+    bio text null,
+    avatar text null,
+    created_at timestamp with time zone not null default now(),
+    updated_at timestamp without time zone null default now(),
+    constraint profiles_pkey primary key (id),
+    constraint profiles_email_key unique (email),
+    constraint profiles_username_key unique (username)
+   ) TABLESPACE pg_default;
+   ```
+
+   **`recipes`** — Recipe data
+
+   ```sql
+   create table public.recipes (
+    id uuid not null default gen_random_uuid (),
+    title text not null,
+    description text null,
+    cover_img text null,
+    ingredients jsonb null,
+    preparation_steps jsonb null,
+    preparation_time text null,
+    cooking_time text null,
+    servings integer null,
+    difficulty text null,
+    cuisine text null,
+    tags text null,
+    status text null,
+    created_at timestamp with time zone not null default now(),
+    updated_at timestamp without time zone null default now(),
+    user_id uuid null,
+    constraint recipes_pkey primary key (id),
+    constraint recipes_user_id_fkey foreign KEY (user_id) references profiles (id)
+   ) TABLESPACE pg_default;
+   ```
+
+   **`recipe_loves`** — Favorites
+
+   ```sql
+   create table public.recipe_loves (
+    id uuid not null default gen_random_uuid (),
+    recipe_id uuid not null,
+    user_id uuid not null,
+    created_at timestamp with time zone null default now(),
+    constraint recipe_loves_pkey primary key (id),
+    constraint recipe_loves_recipe_id_user_id_key unique (recipe_id, user_id),
+    constraint recipe_loves_recipe_id_fkey foreign KEY (recipe_id) references recipes (id) on delete CASCADE,
+    constraint recipe_loves_user_id_fkey foreign KEY (user_id) references profiles (id) on delete CASCADE
+   ) TABLESPACE pg_default;
+   ```
+
+   **`user_follows`** — Follow system
+
+   ```sql
+    create table public.user_follows (
+    id bigint generated by default as identity not null,
+    follower_id uuid null,
+    following_id uuid null,
+    created_at timestamp with time zone not null default now(),
+    constraint user_follows_pkey1 primary key (id),
+    constraint user_follows_follower_id_fkey1 foreign KEY (follower_id) references profiles (id),
+    constraint user_follows_following_id_fkey1 foreign KEY (following_id) references profiles (id)
+   ) TABLESPACE pg_default;
+   ```
+
+5. **Set up Storage buckets**
+
+   In your Supabase dashboard, create two storage buckets:
+   - `covers` — Recipe cover images (public)
+   - `avatars` — User profile pictures (public)
+
+6. **Start the development server**
+
+   ```bash
+   pnpm dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000).
+
+## Scripts
+
+| Command      | Description              |
+| ------------ | ------------------------ |
+| `pnpm dev`   | Start development server |
+| `pnpm build` | Build for production     |
+| `pnpm start` | Start production server  |
+| `pnpm lint`  | Run ESLint               |
+
+## Project Structure
+
+```
+app/                  # Next.js App Router pages & API routes
+├── api/ai/route.ts   # Gemini AI chat endpoint
+├── (auth)            # Login, Signup
+├── profile/          # Profile management & recipe CRUD
+├── explore/          # Search & discovery
+├── recipes/[id]/     # Recipe detail pages
+├── users/[username]/ # Public user profiles
+└── ai-assistant/     # Full-page AI chat
+
+components/           # Shared UI components
+├── ui/               # ShadCN UI primitives
+├── RecipeCard/       # Recipe card with fav/delete
+├── recipe/           # Ingredients & steps editors
+└── Sidebar, Navbar, Footer, etc.
+
+lib/
+├── supabase/         # Browser & server Supabase clients
+├── actions/          # Server actions (recipes, profile, user, favs)
+└── utils.ts          # cn() utility
+
+types/                # TypeScript interfaces
+hooks/                # Custom hooks (useAuth, useProfile)
+utils/                # Helper utilities
+context/              # Auth context provider
+```
+
+## Deployment
+
+The project is ready to deploy on **Vercel**.
+
+1. Push your repository to GitHub
+2. Import the project in [Vercel](https://vercel.com/new)
+3. Set the environment variables (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `GEMINI_API_KEY`, `SUPABASE_SECRET_KEY`)
+4. Deploy
+
+Next.js deployment docs: https://nextjs.org/docs/app/building-your-application/deploying
+
+## License
+
+MIT

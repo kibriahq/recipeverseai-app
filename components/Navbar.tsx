@@ -41,7 +41,7 @@ const Navbar = () => {
                 </div>
             </nav>
             <div className='fixed md:hidden top-0 left-0 right-0 z-50 h-16 flex items-center justify-between text-primary-text px-5 bg-white/90 backdrop-blur-lg border-b border-surface/20'>
-                <Image src="/logo.png" alt="Logo" width={200} height={50} className="w-fit h-10" />
+                <Image src="/logo.png" loading="eager" alt="Logo" width={200} height={50} className="w-fit h-10" />
             </div>
             <nav className='fixed md:hidden bottom-0 left-0 right-0 z-50 h-16 bg-white/90 backdrop-blur-lg border-b border-surface/20'>
                 <ul className='w-full grid grid-cols-5 justify-center items-center px-3 h-full'>
