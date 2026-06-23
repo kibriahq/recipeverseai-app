@@ -72,9 +72,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user?.id) {
+        setIsAuth(true);
         getUser(session);
         setSession(session);
-        setIsAuth(true);
+      } else {
+        setIsAuth(false);
+        setUser(null);
+        setSession(null);
       }
       
       setLoading(false);
@@ -86,18 +90,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUserCounts(user?.id!)
   }, [user]);
 
-  // useEffect(() => {
-  //   const { data } = supabase.auth.onAuthStateChange((_, session) => {
-  //     setIsAuth(true)
-  //     setUser(session?.user as any ?? null);
-  //     setSession(session);
-  //     setLoading(false);
-  //   })
-
-  //   return () => data.subscription.unsubscribe();
-  // }, [supabase]);
-
   const setAuth = async (session: Session) => {
+    setLoading(true);
     const { data: user } = await supabase.from('profiles').select('*').eq('id', session?.user?.id).single();
     if (user) {
       setUser(user);

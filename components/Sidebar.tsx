@@ -102,7 +102,7 @@ const Sidebar = () => {
                     {isAuth ? (
                         <div className="mb-1 mt-auto pb-2">
                             <div className="border-t border-secondary-text/20 mx-3 pt-2"></div>
-                            <p onClick={handleLogout} className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-red-500 border-r-2 border-transparent hover:border-red-500 py-2 px-3 rounded-none transition-all duration-150'>
+                            <p onClick={handleLogout} className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-red-500 border-r-2 border-transparent hover:border-red-500 py-2 px-3 rounded-none transition-all duration-150 cursor-pointer'>
                                 <LogOut size={20} className='font-boldbold' />
                                 <span className='font-semibold'>Logout</span>
                             </p>
