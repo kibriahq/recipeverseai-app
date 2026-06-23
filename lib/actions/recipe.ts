@@ -3,7 +3,6 @@
 import { Ingredient } from "@/components/recipe/Ingredients";
 import type { PreparationStep } from "@/components/recipe/PreparationSteps";
 import { createSupabaseServerClient } from "../supabase/server-client";
-import { redirect } from "next/navigation";
 
 type Recipe = {
   title: string;
