@@ -3,6 +3,7 @@
 import { Ingredient } from "@/components/recipe/Ingredients";
 import type { PreparationStep } from "@/components/recipe/PreparationSteps";
 import { createSupabaseServerClient } from "../supabase/server-client";
+import { redirect } from "next/navigation";
 
 type Recipe = {
   title: string;
@@ -30,6 +31,42 @@ export async function getAllRecipes() {
   }
 
   return recipes;
+}
+
+export async function getFeedRecipes() {
+  const supabase = await createSupabaseServerClient();
+  const { data, error: authError } = await supabase.auth.getUser();
+  const userId = data.user?.id;
+
+  if (authError || !userId) {
+    return redirect("/explore");
+  }
+
+  // Get ids of users the authenticated user follows
+  const { data: follows, error: followError } = await supabase
+    .from("user_follows")
+    .select("following_id")
+    .eq("follower_id", userId);
+
+  if (followError) throw followError;
+
+  const followingIds = follows.map((f) => f.following_id);
+
+  if (followingIds.length === 0) {
+    // no follows yet, just return empty
+    return [];
+  }
+
+  // 2. Get recipes from those users
+  const { data: recipes, error } = await supabase
+    .from("recipes")
+    .select(`*, profiles (username, name, avatar)`)
+    .in("user_id", followingIds)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  return recipes ?? [];
 }
 
 export async function createRecipe({

@@ -1,16 +1,9 @@
 import RecipeCard from "@/components/RecipeCard";
-import { createSupabaseServerClient } from "@/lib/supabase/server-client";
+import { getFeedRecipes } from "@/lib/actions/recipe";
 
 export default async function Home() {
-  const supabase = await createSupabaseServerClient();
-  const { data: recipes, error } = await supabase
-    .from('recipes')
-    .select(`*,profiles (username,name,avatar)`)
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    throw new Error(error.message);
-  }
+  const recipes = await getFeedRecipes();
+  
   return (
     <>
       <div className="flex flex-col pt-15 md:pt-0 pb-20 md:pb-10 px-5 md:px-10">
@@ -23,7 +16,7 @@ export default async function Home() {
           </div>
         ): (
           <div className="flex h-[200px] w-full items-center justify-center pt-30">
-            <p className="text-secondary-text/80">No items found!</p>
+            <p className="text-secondary-text/80">Nothing here to show yet!</p>
           </div>
         )}
 
