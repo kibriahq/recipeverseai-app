@@ -2,6 +2,7 @@
 
 import { createSupabaseServerClient } from "../supabase/server-client";
 
+// this funciton is not using
 export const getRecipeFavs = async (recipeId: string) => {
   const supabase = await createSupabaseServerClient();
 
@@ -17,13 +18,14 @@ export const getRecipeFavs = async (recipeId: string) => {
   return data;
 };
 
+// this funciton is not using
 export const isFavRecipe = async (recipeId: string) => {
   const supabase = await createSupabaseServerClient();
   const { data: userData, error: authError } = await supabase.auth.getUser();
   const userId = userData?.user?.id;
 
   if (authError || !userId) {
-    return false
+    return false;
   }
 
   const { data, error } = await supabase

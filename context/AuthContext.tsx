@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: user } = await supabase.from('profiles').select('*').eq('id', session?.user?.id).single();
     if (user) {
       setUser(user);
-      setIsAuth(true);
+      // setIsAuth(true);
     }
   }
 
@@ -72,8 +72,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user?.id) {
-        getUser(session)
+        getUser(session);
         setSession(session);
+        setIsAuth(true);
       }
       
       setLoading(false);

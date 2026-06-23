@@ -59,14 +59,35 @@ export async function getFeedRecipes(page: number = 0) {
   const from = page * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
-  const { data: recipes, error } = await supabase
+  const { data: recipesRaw, error } = await supabase
     .from("recipes")
-    .select(`*, profiles (username, name, avatar)`)
+    .select(`*, profiles (username,name,avatar), recipe_loves(count)`)
     .in("user_id", followingIds)
     .order("created_at", { ascending: false })
     .range(from, to);
 
   if (error) throw error;
+
+  let lovedIds = new Set<string>();
+
+  if (recipesRaw?.length) {
+    const { data: lovedRows } = await supabase
+      .from("recipe_loves")
+      .select("recipe_id")
+      .eq("user_id", userId)
+      .in(
+        "recipe_id",
+        recipesRaw.map((r: any) => r.id),
+      );
+
+    lovedIds = new Set(lovedRows?.map((row: any) => row.recipe_id));
+  }
+
+  const recipes = recipesRaw?.map(({ recipe_loves, ...recipe }: any) => ({
+    ...recipe,
+    favs: recipe_loves?.[0]?.count ?? 0,
+    isFav: lovedIds.has(recipe.id),
+  }));
 
   return recipes ?? [];
 }

@@ -1,12 +1,6 @@
-import { Button } from '@/components/ui/button'
-import { createSupabaseServerClient } from '@/lib/supabase/server-client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import Image from 'next/image'
-import Link from 'next/link';
 import RecipeCard from '@/components/RecipeCard';
-import { toast } from 'react-toastify';
-import { redirect } from 'next/navigation';
-import { revalidatePath } from 'next/cache';
 import { getByUsername } from '@/lib/actions/user';
 import FollowAction from './FollowAction';
 

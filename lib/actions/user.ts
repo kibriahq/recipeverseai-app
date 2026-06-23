@@ -5,10 +5,13 @@ import { createSupabaseServerClient } from "../supabase/server-client";
 
 export const getByUsername = async (username: string) => {
   const supabase = await createSupabaseServerClient();
-  const { data: auth } = await supabase.auth.getUser();
   const normalizedUsername = decodeURIComponent(username).replaceAll("@", "");
 
-  const { data, error } = await supabase
+  const {
+    data: { user: viewer },
+  } = await supabase.auth.getUser();
+
+  const { data: user, error } = await supabase
     .from("profiles")
     .select("*")
     .eq("username", normalizedUsername)
@@ -18,17 +21,38 @@ export const getByUsername = async (username: string) => {
     throw new Error(error.message);
   }
 
-  const { data: recipes, error: recipesError } = await supabase
+  const { data: recipesRaw, error: recipesError } = await supabase
     .from("recipes")
-    .select(`*,profiles (username,name,avatar)`)
-    .eq("user_id", data.id)
+    .select(`*, profiles (username,name,avatar), recipe_loves(count)`)
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
   if (recipesError) {
     throw new Error(recipesError.message);
   }
 
-  return { user: data, recipes, isMe: auth.user?.id === data.id };
+  let lovedIds = new Set<string>();
+
+  if (viewer && recipesRaw?.length) {
+    const { data: lovedRows } = await supabase
+      .from("recipe_loves")
+      .select("recipe_id")
+      .eq("user_id", viewer.id)
+      .in(
+        "recipe_id",
+        recipesRaw.map((r) => r.id),
+      );
+
+    lovedIds = new Set(lovedRows?.map((row) => row.recipe_id));
+  }
+
+  const recipes = recipesRaw?.map(({ recipe_loves, ...recipe }) => ({
+    ...recipe,
+    favs: recipe_loves?.[0]?.count ?? 0,
+    isFav: lovedIds.has(recipe.id),
+  }));
+
+  return { user, recipes, isMe: viewer?.id === user.id };
 };
 
 export const getOwnProfile = async () => {
@@ -50,15 +74,36 @@ export const getOwnProfile = async () => {
     throw new Error(error.message);
   }
 
-  const { data: recipes, error: recipesError } = await supabase
+   const { data: recipesRaw, error: recipesError } = await supabase
     .from("recipes")
-    .select(`*,profiles (username,name,avatar)`)
+    .select(`*, profiles (username,name,avatar), recipe_loves(count)`)
     .eq("user_id", data.id)
     .order("created_at", { ascending: false });
 
   if (recipesError) {
     throw new Error(recipesError.message);
   }
+
+  let lovedIds = new Set<string>();
+
+  if (recipesRaw?.length) {
+    const { data: lovedRows } = await supabase
+      .from("recipe_loves")
+      .select("recipe_id")
+      .eq("user_id", userId)
+      .in(
+        "recipe_id",
+        recipesRaw.map((r) => r.id),
+      );
+
+    lovedIds = new Set(lovedRows?.map((row) => row.recipe_id));
+  }
+
+  const recipes = recipesRaw?.map(({ recipe_loves, ...recipe }) => ({
+    ...recipe,
+    favs: recipe_loves?.[0]?.count ?? 0,
+    isFav: lovedIds.has(recipe.id),
+  }));
 
   return { user: data, recipes };
 };

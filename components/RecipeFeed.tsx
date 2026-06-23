@@ -6,8 +6,8 @@ import { getFeedRecipes } from "@/lib/actions/recipe";
 import { RecipeType } from "@/types/recipe";
 import { Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
-import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 
 const PAGE_SIZE = 12;
 
@@ -18,14 +18,17 @@ export default function RecipeFeed({ initialRecipes }: { initialRecipes: RecipeT
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const sentinelRef = useRef<HTMLDivElement>(null);
 
-    const { isAuth } = useAuth();
+    const supabase = getSupabaseBrowserClient()
     const router = useRouter();
+    
     useEffect(() => {
-        if(!isAuth) {
-            toast.error("You are not logged in!");
-            router.replace('/explore');
-        }
-    }, [isAuth, router]);
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (!session?.user?.id) {
+                toast.error("You are not logged in!");
+                router.replace('/explore');
+            }
+        });
+    }, [router, supabase]);
 
     const loadMore = useCallback(async () => {
         if (isLoadingMore || !hasMore) return;

@@ -55,7 +55,7 @@ const Page = () => {
             if (searchType === 'recipe') {
                 let query = supabase
                     .from('recipes')
-                    .select(`*,profiles (username,name,avatar)`)
+                    .select(`*, profiles (username,name,avatar), recipe_loves(count)`)
                     .order('created_at', { ascending: false })
                     .range(from, to)
 
@@ -63,10 +63,32 @@ const Page = () => {
                 if (cuisine.trim()) query = query.ilike('cuisine', `%${cuisine.trim()}%`)
                 if (difficulty) query = query.eq('difficulty', difficulty)
 
-                const { data, error } = await query
+                const { data: recipesRaw, error } = await query
                 if (error) throw new Error(error.message)
 
-                const newRecipes = (data || []) as RecipeType[]
+                const { data: viewerData } = await supabase.auth.getUser();
+                let lovedIds = new Set<string>();
+
+                const viewer = viewerData?.user;
+
+                if (viewer && recipesRaw?.length) {
+                    const { data: lovedRows } = await supabase
+                        .from("recipe_loves")
+                        .select("recipe_id")
+                        .eq("user_id", viewer.id)
+                        .in(
+                            "recipe_id",
+                            recipesRaw.map((r: any) => r.id),
+                        );
+
+                    lovedIds = new Set(lovedRows?.map((row: any) => row.recipe_id));
+                }
+
+                const newRecipes = recipesRaw?.map(({ recipe_loves, ...recipe }: any) => ({
+                    ...recipe,
+                    favs: recipe_loves?.[0]?.count ?? 0,
+                    isFav: lovedIds.has(recipe.id),
+                }));
                 setRecipes(prev => append ? [...prev, ...newRecipes] : newRecipes)
                 setHasMore(newRecipes.length === PAGE_SIZE)
             } else {
