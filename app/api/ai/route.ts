@@ -19,7 +19,7 @@ function isChatHistoryMessage(message: unknown): message is ChatHistoryMessage {
 
 export async function POST(req: Request) {
   try {
-    const { message, history } = await req.json();
+    const { message, history, context } = await req.json();
 
     if (!message || typeof message !== "string") {
       return Response.json({ error: "Message is required." }, { status: 400 });
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     const model = genAI.getGenerativeModel({
       model: "gemini-3.1-flash-lite",
       systemInstruction:
-        "You are RecipeVerse AI, a concise and practical cooking assistant. Help with recipes, substitutions, meal planning, grocery ideas, dietary adjustments, cooking troubleshooting, and food safety basics. Keep answers clear, actionable, and friendly. When relevant, include quantities, steps, timing, and safety notes.",
+        `You are RecipeVerse AI, a concise and practical cooking assistant. Help with recipes, substitutions, meal planning, grocery ideas, dietary adjustments, cooking troubleshooting, and food safety basics. Keep answers clear, actionable, and friendly. When relevant, include quantities, steps, timing, and safety notes. ${context ? `The user is currently viewing this recipe: ${context}. When answering questions about this recipe, use the recipe information above as the primary source of truth.` : ''}`,
     });
 
     const contents = chatHistory.map((chatMessage) => ({

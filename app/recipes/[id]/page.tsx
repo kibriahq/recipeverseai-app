@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import FavBtn from '@/components/RecipeCard/FavBtn';
 import { minsToText } from '@/utils/mins-text';
+import AskAI from './AskAi';
 
 
 const TimeCard = ({ value, title, icon, className }: { value: string, title: string, icon: any, className?: string }) => {
@@ -212,6 +213,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
                 </div>
             </div>
 
+            <AskAI recipe={recipe} />
         </main>
     )
 }
