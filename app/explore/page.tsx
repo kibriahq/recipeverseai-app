@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input'
 import RecipeCard from '@/components/RecipeCard'
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client'
 import { RecipeType } from '@/types/recipe'
-import { SlidersHorizontal } from 'lucide-react'
+import { Loader2, SlidersHorizontal } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -36,9 +36,10 @@ const Page = () => {
     const { q, defineQ } = useAuth();
 
     const fetchRecipes = async () => {
+        setIsLoading(true);
         const recipes = await getAllRecipes();
-        console.log(recipes);
         setRecipes(recipes);
+        setIsLoading(false);
     }
 
     useEffect(() => {
@@ -240,6 +241,12 @@ const Page = () => {
             {!isLoading && !searchError && searchKeyword && searchType === 'user' && users.length === 0 && (
                 <div className="flex h-[200px] w-full items-center justify-center pt-10">
                     <p className="text-secondary-text/80">No users found!</p>
+                </div>
+            )}
+
+            {isLoading && (
+                <div className="flex h-[200px] w-full items-center justify-center pt-10">
+                    <Loader2 className='w-8 h-8 animate-spin text-secondary-text' />
                 </div>
             )}
         </div>
