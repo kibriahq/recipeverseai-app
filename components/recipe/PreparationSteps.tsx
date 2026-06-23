@@ -82,9 +82,14 @@ const PreparationSteps = ({ steps, setSteps }: { steps: PreparationStep[], setSt
                     <p className="text-xs text-muted-foreground">Add step-by-step instructions for preparing the recipe.</p>
                 </div>
                 {steps.length > 0 && (
-                    <span className="text-xs font-medium px-2 py-0.5 bg-primary/10 text-primary rounded-full">
-                        {steps.length} {steps.length === 1 ? 'step' : 'steps'}
-                    </span>
+                    <div className="">
+                        <span className="hidden sm:block text-xs font-medium px-2 py-0.5 bg-primary/10 text-primary rounded-full">
+                            {steps.length} {steps.length === 1 ? 'step' : 'steps'}
+                        </span>
+                        <span className="sm:hidden text-xs font-medium px-2 py-0.5 bg-primary/10 text-primary rounded-full">
+                            {steps.length}
+                        </span>
+                    </div>
                 )}
             </div>
 

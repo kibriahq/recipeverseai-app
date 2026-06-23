@@ -52,9 +52,14 @@ const Ingredients = ({ ingredients, setIngredients }: { ingredients: Ingredient[
                     <p className="text-xs text-muted-foreground">Add the ingredients needed for this recipe.</p>
                 </div>
                 {ingredients.length > 0 && (
-                    <span className="text-xs font-medium px-2 py-0.5 bg-primary/10 text-primary rounded-full">
-                        {ingredients.length} {ingredients.length === 1 ? 'ingredient' : 'ingredients'}
-                    </span>
+                    <div className="">
+                        <span className="hidden sm:block text-xs font-medium px-2 py-0.5 bg-primary/10 text-primary rounded-full">
+                            {ingredients.length} {ingredients.length === 1 ? 'ingredient' : 'ingredients'}
+                        </span>
+                        <span className="sm:hidden text-xs font-medium px-2 py-0.5 bg-primary/10 text-primary rounded-full">
+                            {ingredients.length}
+                        </span>
+                    </div>
                 )}
             </div>
 
