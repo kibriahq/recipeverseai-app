@@ -121,15 +121,15 @@ const EditWrapper = ({ id, recipe, user }: { id: string, recipe: RecipeType, use
 
                 <Card className="border border-border/60 rounded-2xl shadow-xl bg-card overflow-hidden transition-all duration-300 my-12 md:my-0">
                     <CardHeader className="border-b border-border/40 bg-muted/10 px-6 py-6">
-                        <div className="flex items-center gap-3">
+                        <div className="flex flex-col sm:flex-row items-center gap-3">
                             <div className="p-2.5 bg-primary/10 rounded-xl text-primary">
                                 <Pencil className="h-6 w-6 animate-pulse" />
                             </div>
                             <div>
-                                <CardTitle className="text-2xl font-bold text-foreground flex items-center gap-2">
+                                <CardTitle className="text-2xl font-bold text-foreground flex items-center justify-center sm:justify-start gap-2">
                                     Edit Recipe
                                 </CardTitle>
-                                <CardDescription className="text-xs text-muted-foreground mt-1">
+                                <CardDescription className="text-xs text-muted-foreground mt-1 text-center sm:text-left">
                                     Update your culinary creation with the RecipeVerse community.
                                 </CardDescription>
                             </div>
@@ -324,11 +324,11 @@ const EditWrapper = ({ id, recipe, user }: { id: string, recipe: RecipeType, use
                             </div>
 
                             {/* Form Action Buttons */}
-                            <div className="flex items-center justify-end gap-3 pt-6 border-t border-border/40">
-                                <Button onClick={() => router.back()} variant="outline" type="button" className="h-10 px-5 font-medium border-border/80">
+                            <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-6 border-t border-border/40">
+                                <Button onClick={() => router.back()} variant="outline" type="button" className="h-10 px-5 font-medium border-border/80 w-full sm:w-fit">
                                     Cancel
                                 </Button>
-                                <Button type="submit" disabled={loading} className="h-10 px-6 font-semibold bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-1.5 shadow-md hover:shadow-lg transition-all active:translate-y-px">
+                                <Button type="submit" disabled={loading} className="h-10 px-6 font-semibold bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-1.5 shadow-md hover:shadow-lg transition-all active:translate-y-px w-full sm:w-fit">
                                     {loading ? (
                                         <>
                                             <Loader2 className="h-4 w-4 animate-spin" />
