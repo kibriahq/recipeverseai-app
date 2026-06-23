@@ -43,7 +43,7 @@ export async function POST(req: Request) {
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({
-      model: "gemini-3.1-flash-lite",
+      model: "gemini-2.5-flash",
       systemInstruction:
         "You are RecipeVerse AI, a concise and practical cooking assistant. Help with recipes, substitutions, meal planning, grocery ideas, dietary adjustments, cooking troubleshooting, and food safety basics. Keep answers clear, actionable, and friendly. When relevant, include quantities, steps, timing, and safety notes.",
     });
