@@ -8,16 +8,16 @@ export async function updateSession(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  const protectedPaths = ['/profile', '/profile/recipes', '/profile/recipes/add', '/profile/recipes/edit', "/profile/edit", "/profile/password"]
-  const isProtected = protectedPaths.some((p) =>
-    request.nextUrl.pathname.startsWith(p)
-  )
+  // const protectedPaths = ['/profile']
+  // const isProtected = protectedPaths.some((p) =>
+  //   request.nextUrl.pathname.startsWith(p)
+  // )
 
-  if (isProtected && !user) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
-  }
+  // if (isProtected && !user) {
+  //   const url = request.nextUrl.clone()
+  //   url.pathname = '/login'
+  //   return NextResponse.redirect(url)
+  // }
 
   return supabaseResponse
 }
