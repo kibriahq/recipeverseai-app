@@ -3,7 +3,30 @@ import Image from 'next/image'
 import RecipeCard from '@/components/RecipeCard';
 import { getByUsername } from '@/lib/actions/user';
 import FollowAction from './FollowAction';
+import { createSupabaseServerClient } from '@/lib/supabase/server-client';
 
+// export async function generateMetadata({ params }: { params: Promise<{ username: string }> }) {
+//     const supabase = await createSupabaseServerClient();
+//     const { username } = await params;
+
+//     const { data: user } = await supabase
+//         .from('profiles')
+//         .select(`name, bio`)
+//         .eq('username', decodeURIComponent(username).replaceAll("@", ""))
+//         .single();
+
+//     if (!user) {
+//         return {
+//             title: "RecipeVerse",
+//             description: "AI-powered recipe discovery and cooking assistant",
+//         }
+//     }
+
+//     return {
+//         title: `${user.name} - RecipeVerse`,
+//         description: user.bio,
+//     }
+// }
 
 const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
     const { username } = await params;
@@ -36,7 +59,7 @@ const Page = async ({ params }: { params: Promise<{ username: string }> }) => {
                         </div>
 
                     </CardHeader>
-                    <FollowAction recipesCount={recipes.length} userId={user.id} isMe={isMe} />
+                    <FollowAction recipesCount={recipes.length} user={user} isMe={isMe} />
                 </Card>
 
                 {recipes && recipes.length > 0 ? (

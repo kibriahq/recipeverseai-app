@@ -1,15 +1,10 @@
 import { Button } from '@/components/ui/button'
-import { createSupabaseServerClient } from '@/lib/supabase/server-client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import Image from 'next/image'
 import Link from 'next/link';
 import ProfileImg from './ProfileImg';
 import RecipeCard from '@/components/RecipeCard';
-import { toast } from 'react-toastify';
-import { redirect } from 'next/navigation';
-import { revalidatePath } from 'next/cache';
 import LogoutBtn from './LogoutBtn';
-import { getFollowers, getFollowing, getOwnProfile } from '@/lib/actions/user';
+import { getOwnProfile } from '@/lib/actions/user';
 
 const ProfileStats = ({ value, title }: { value: number, title: string }) => {
     return (
@@ -23,8 +18,6 @@ const ProfileStats = ({ value, title }: { value: number, title: string }) => {
 const Page = async () => {
     // get profile information
     const { user, recipes } = await getOwnProfile();
-    const followers = await getFollowers(user.id);
-    const following = await getFollowing(user.id);
 
     return (
         <main className="flex min-h-screen flex-col pb-20 md:pb-10">
@@ -45,8 +38,8 @@ const Page = async () => {
                     </CardHeader>
                     <CardContent className="flex justify-around md:justify-start md:gap-10 lg:gap-20 md:pl-[140px]">
                         <ProfileStats value={recipes.length} title="Recipes" />
-                        <ProfileStats value={followers?.length} title="Followers" />
-                        <ProfileStats value={following?.length} title="Following" />
+                        <ProfileStats value={user.followers} title="Followers" />
+                        <ProfileStats value={user.following} title="Following" />
                     </CardContent>
                     <div className="flex flex-col sm:flex-row justify-center md:justify-start w-full gap-2 mt-2 md:gap-2 lg:gap-5 md:pl-[140px] lg:pr-[10%]">
                         <Button variant="default" asChild size="sm" className='flex-1 h-10 py-2 text-sm border border-primary'>

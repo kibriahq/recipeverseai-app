@@ -2,9 +2,10 @@
 
 import { Button } from '@/components/ui/button'
 import { CardContent } from '@/components/ui/card'
-import { addFollow, getFollowers, getFollowing, isFollowingUser, unFollow } from '@/lib/actions/user'
+import { addFollow, unFollow } from '@/lib/actions/user'
+import { UserType } from '@/types/user'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'react-toastify'
 
 const ProfileStats = ({ value, title }: { value: number, title: string }) => {
@@ -16,52 +17,24 @@ const ProfileStats = ({ value, title }: { value: number, title: string }) => {
     )
 }
 
-const FollowAction = ({ recipesCount, userId, isMe }: { recipesCount: number, userId: string, isMe: boolean }) => {
-    const [isFollowing, setIsFollowing] = useState(false);
-    const [followers, setFollowers] = useState(0);
-    const [following, setFollowing] = useState(0);
+type CustomUserType = UserType & {
+    following: number;
+    followers: number;
+    isFollowing: boolean;
+}
 
-    const fetchIsFollowing = async () => {
-        try {
-            const isFlr = await isFollowingUser(userId);
-            setIsFollowing(isFlr);
-        } catch (error: any) {
-            toast.error(error.message)
-        }
-    }
-
-    const fetchFollowers = async () => {
-        try {
-            const flr = await getFollowers(userId);
-            setFollowers(flr.length);
-        } catch (error: any) {
-            toast.error(error.message)
-        }
-    }
-
-    const fetchFollowing = async () => {
-        try {
-            const flor = await getFollowing(userId);
-            setFollowing(flor.length);
-        } catch (error: any) {
-            toast.error(error.message)
-        }
-    }
-
-    useEffect(() => {
-        fetchIsFollowing();
-        fetchFollowers();
-        fetchFollowing();
-    }, [])
+const FollowAction = ({ recipesCount, user, isMe }: { recipesCount: number, user: CustomUserType, isMe: boolean }) => {
+    const [isFollowing, setIsFollowing] = useState(user.isFollowing);
+    const [followers, setFollowers] = useState(user.followers);
 
     const handleFollow = async () => {
         try {
             if (isFollowing) {
-                await unFollow(userId);
+                await unFollow(user.id);
                 toast.success("Unfollowed successfully!");
                 setFollowers(followers - 1);
             } else {
-                await addFollow(userId);
+                await addFollow(user.id);
                 toast.success("Followed successfully!");
                 setFollowers(followers + 1);
             }
@@ -77,17 +50,17 @@ const FollowAction = ({ recipesCount, userId, isMe }: { recipesCount: number, us
             <CardContent className="flex justify-around md:justify-start md:gap-10 lg:gap-20 md:pl-[140px]">
                 <ProfileStats value={recipesCount} title="Recipes" />
                 <ProfileStats value={followers} title="Followers" />
-                <ProfileStats value={following} title="Following" />
+                <ProfileStats value={user.following} title="Following" />
             </CardContent>
             {isMe ? (
                 <div className="flex flex-col sm:flex-row justify-center md:justify-start w-full gap-2 mt-2 md:gap-2 lg:gap-5 md:pl-[140px] lg:pr-[20%]">
-                    <Button asChild variant="outline" size="sm" className={`flex-1 h-10 py-2 text-sm border border-primary text-primary hover:text-primary-foreground hover:bg-primary`}>
+                    <Button asChild variant="outline" size="sm" className={`flex-1 h-10 py-2 text-sm border border-primary text-primary hover:text-primary-foreground hover:bg-primary cursor-pointer`}>
                         <Link href="/profile">Go To Profile</Link>
                     </Button>
                 </div>
             ) : (
                 <div className="flex flex-col sm:flex-row justify-center md:justify-start w-full gap-2 mt-2 md:gap-2 lg:gap-5 md:pl-[140px] lg:pr-[20%]">
-                    <Button onClick={handleFollow} variant="default" size="sm" className={`flex-1 h-10 py-2 text-sm border ${isFollowing ? "border-secondary-text bg-secondary-text hover:bg-secondary-text text-white" : "border-primary"}`}>
+                    <Button onClick={handleFollow} variant="default" size="sm" className={`flex-1 h-10 py-2 text-sm border cursor-pointer ${isFollowing ? "border-secondary-text bg-secondary-text hover:bg-secondary-text text-white" : "border-primary"}`}>
                         {isFollowing ? "Unfollow" : "Follow Now"}
                     </Button>
                 </div>

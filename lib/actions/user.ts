@@ -21,6 +21,38 @@ export const getByUsername = async (username: string) => {
     throw new Error(error.message);
   }
 
+  const { data: authData } = await supabase.auth.getUser();
+  const currentUserId = authData?.user?.id ?? null;
+
+  const [followersRes, followingRes, isFollowingRes] = await Promise.all([
+    // total followers: rows where this user is the one being followed
+    supabase
+      .from("user_follows")
+      .select("*", { count: "exact", head: true })
+      .eq("following_id", user.id),
+
+    // total following: rows where this user is the follower
+    supabase
+      .from("user_follows")
+      .select("*", { count: "exact", head: true })
+      .eq("follower_id", user.id),
+
+    // is auth user following this profile?
+    currentUserId
+      ? supabase
+          .from("user_follows")
+          .select("id")
+          .eq("follower_id", currentUserId)
+          .eq("following_id", user.id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+  ]);
+
+  const followersCount = followersRes.count ?? 0;
+  const followingCount = followingRes.count ?? 0;
+  const isFollowing = !!isFollowingRes.data;
+
+  // recipe data
   const { data: recipesRaw, error: recipesError } = await supabase
     .from("recipes")
     .select(`*, profiles (username,name,avatar), recipe_loves(count)`)
@@ -52,7 +84,16 @@ export const getByUsername = async (username: string) => {
     isFav: lovedIds.has(recipe.id),
   }));
 
-  return { user, recipes, isMe: viewer?.id === user.id };
+  return {
+    user: {
+      ...user,
+      following: followingCount,
+      followers: followersCount,
+      isFollowing,
+    },
+    recipes,
+    isMe: viewer?.id === user.id,
+  };
 };
 
 export const getOwnProfile = async () => {
@@ -74,7 +115,25 @@ export const getOwnProfile = async () => {
     throw new Error(error.message);
   }
 
-   const { data: recipesRaw, error: recipesError } = await supabase
+  const [followersRes, followingRes] = await Promise.all([
+    // total followers: rows where this user is the one being followed
+    supabase
+      .from("user_follows")
+      .select("*", { count: "exact", head: true })
+      .eq("following_id", userId),
+
+    // total following: rows where this user is the follower
+    supabase
+      .from("user_follows")
+      .select("*", { count: "exact", head: true })
+      .eq("follower_id", userId),
+  ]);
+
+  const followersCount = followersRes.count ?? 0;
+  const followingCount = followingRes.count ?? 0;
+
+  // recipe data
+  const { data: recipesRaw, error: recipesError } = await supabase
     .from("recipes")
     .select(`*, profiles (username,name,avatar), recipe_loves(count)`)
     .eq("user_id", data.id)
@@ -105,7 +164,7 @@ export const getOwnProfile = async () => {
     isFav: lovedIds.has(recipe.id),
   }));
 
-  return { user: data, recipes };
+  return { user: {...data, following: followingCount, followers: followersCount}, recipes };
 };
 
 export const addFollow = async (followingId: string) => {
