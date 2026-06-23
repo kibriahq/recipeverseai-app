@@ -58,8 +58,8 @@ const Ingredients = ({ ingredients, setIngredients }: { ingredients: Ingredient[
                 )}
             </div>
 
-            <div className="border border-border/60 rounded-xl overflow-hidden bg-card shadow-sm">
-                <table className="w-full border-collapse text-sm">
+            <div className="border border-border/60 rounded-xl overflow-x-auto bg-card shadow-sm">
+                <table className="border-collapse text-sm w-[500px] sm:w-full">
                     <thead>
                         <tr className="border-b border-border/60 bg-muted/40 text-muted-foreground text-[11px] font-bold uppercase tracking-wider">
                             <th className="py-3 px-4 text-left w-[35%] font-semibold">Ingredient Name</th>
@@ -91,7 +91,7 @@ const Ingredients = ({ ingredients, setIngredients }: { ingredients: Ingredient[
                                             variant="destructive"
                                             size="icon-xs"
                                             onClick={() => handleRemove(ing.id)}
-                                            className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
+                                            className="opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus:opacity-100 transition-opacity"
                                             title="Delete Ingredient"
                                         >
                                             <Trash2 className="h-3 w-3" />
