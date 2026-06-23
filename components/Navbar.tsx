@@ -46,30 +46,30 @@ const Navbar = () => {
             <nav className='fixed md:hidden bottom-0 left-0 right-0 z-50 h-16 bg-white/90 backdrop-blur-lg border-b border-surface/20'>
                 <ul className='w-full grid grid-cols-5 justify-center items-center px-3 h-full'>
                     <li className='mx-auto'>
-                        <Link href="/" className='text-sm w-full flex items-center gap-0 text-primary-text/80 hover:text-primary rounded-none transition-all duration-150 flex-col'>
+                        <Link href="/" className={`text-sm w-full flex items-center gap-0 hover:text-primary rounded-none transition-all duration-150 flex-col ${pathname === "/" ? "text-primary" : "text-primary-text/80"}`}>
                             <Home size={22} className='font-normal' />
                             <span className='font-normal'>Feed</span>
                         </Link>
                     </li>
                     <li className='mx-auto'>
-                        <Link href="/explore" className='text-sm w-full flex items-center gap-0 text-primary-text/80 hover:text-primary rounded-none transition-all duration-150 flex-col'>
+                        <Link href="/explore" className={`text-sm w-full flex items-center gap-0 hover:text-primary rounded-none transition-all duration-150 flex-col ${pathname === "/explore" ? "text-primary" : "text-primary-text/80"}`}>
                             <Search size={22} className='font-normal' />
                             <span className='font-normal'>Explore</span>
                         </Link>
                     </li>
                     <li className='mx-auto'>
-                        <Link href="/profile/recipes/add" className='text-sm flex items-center justify-center gap-0 text-white hover:text-primary rounded-full transition-all duration-150 flex-col bg-primary h-11 w-11'>
+                        <Link href="/profile/recipes/add" className='text-sm flex items-center justify-center gap-0 text-white hover:text-primary rounded-full transition-all duration-150 flex-col bg-primary h-13 w-13'>
                             <Plus size={22} className='font-normal' />
                         </Link>
                     </li>
                     <li className='mx-auto'>
-                        <Link href="/ai-assistant" className='text-sm w-full flex items-center gap-0 text-primary-text/80 hover:text-primary rounded-none transition-all duration-150 flex-col'>
+                        <Link href="/ai-assistant" className={`text-sm w-full flex items-center gap-0 hover:text-primary rounded-none transition-all duration-150 flex-col ${pathname === "/ai-assistant" ? "text-primary" : "text-primary-text/80"}`}>
                             <Astroid size={22} className='font-normal' />
                             <span className='font-normal'>Assistant</span>
                         </Link>
                     </li>
                     <li className='mx-auto'>
-                        <Link href="/profile" className='text-sm w-full flex items-center gap-0 text-primary-text/80 hover:text-primary rounded-none transition-all duration-150 flex-col'>
+                        <Link href="/profile" className={`text-sm w-full flex items-center gap-0 hover:text-primary rounded-none transition-all duration-150 flex-col ${pathname === "/profile" ? "text-primary" : "text-primary-text/80"}`}>
                             <User size={22} className='font-normal' />
                             <span className='font-normal'>Profile</span>
                         </Link>

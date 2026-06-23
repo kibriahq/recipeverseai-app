@@ -2,9 +2,9 @@
 import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
-import { Astroid, BookmarkPlus, LayoutPanelLeft, LogOut, Search, User } from 'lucide-react'
+import { BookmarkPlus, LayoutPanelLeft, LogOut, Search, User } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 
 const ProfileStats = ({ value, title }: { value: number, title: string }) => {
@@ -15,9 +15,11 @@ const ProfileStats = ({ value, title }: { value: number, title: string }) => {
         </div>
     )
 }
+
 const Sidebar = () => {
     const { user, isAuth, signOut, recipeCount, followerCount, followingCount } = useAuth();
     const router = useRouter();
+    const pathname = usePathname();
 
     const handleLogout = async () => {
         try {
@@ -63,33 +65,33 @@ const Sidebar = () => {
                 <nav className="flex flex-col flex-1 w-full pl-2">
                     <ul className='w-full'>
                         <li className="mb-1">
-                            <Link href="/" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
+                            <Link href="/" className={`text-sm w-full flex items-center gap-2 hover:text-primary border-r-2 hover:border-primary py-2 px-3 rounded-none transition-all duration-150 ${pathname === "/" ? "border-primary text-primary" : "border-transparent text-primary-text/80"}`}>
                                 <LayoutPanelLeft size={20} className='font-boldbold' />
                                 <span className='font-semibold'>Feed</span>
                             </Link>
                         </li>
                         <li className="mb-1">
-                            <Link href="/explore" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
+                            <Link href="/explore" className={`text-sm w-full flex items-center gap-2 hover:text-primary border-r-2 hover:border-primary py-2 px-3 rounded-none transition-all duration-150 ${pathname === "/explore" ? "border-primary text-primary" : "border-transparent text-primary-text/80"}`}>
                                 <Search size={20} className='font-boldbold' />
                                 <span className='font-semibold'>Explore</span>
                             </Link>
                         </li>
                         <li className="mb-1">
-                            <Link href="/profile/recipes/add" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
+                            <Link href="/profile/recipes/add" className={`text-sm w-full flex items-center gap-2 hover:text-primary border-r-2 hover:border-primary py-2 px-3 rounded-none transition-all duration-150 ${pathname === "/profile/recipes/add" ? "border-primary text-primary" : "border-transparent text-primary-text/80"}`}>
                                 <BookmarkPlus size={20} className='font-boldbold' />
                                 <span className='font-semibold'>Create</span>
                             </Link>
                         </li>
                         {isAuth ? (
                             <li className="mb-1">
-                                <Link href="/profile" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
+                                <Link href="/profile" className={`text-sm w-full flex items-center gap-2 hover:text-primary border-r-2 hover:border-primary py-2 px-3 rounded-none transition-all duration-150 ${pathname === "/profile" ? "border-primary text-primary" : "border-transparent text-primary-text/80"}`}>
                                     <User size={20} className='font-boldbold' />
                                     <span className='font-semibold'>Profile</span>
                                 </Link>
                             </li>
                         ) : (
                             <li className="mb-1">
-                                <Link href="/login" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
+                                <Link href="/login" className={`text-sm w-full flex items-center gap-2 hover:text-primary border-r-2 hover:border-primary py-2 px-3 rounded-none transition-all duration-150 ${pathname === "/login" ? "border-primary text-primary" : "border-transparent text-primary-text/80"}`}>
                                     <User size={20} className='font-boldbold' />
                                     <span className='font-semibold'>Login</span>
                                 </Link>
@@ -108,7 +110,7 @@ const Sidebar = () => {
                     ) : (
                         <div className="mb-1 mt-auto pb-2">
                             <div className="border-t border-secondary-text/20 mx-3 pt-2"></div>
-                            <Link href="/signup" className='text-sm w-full flex items-center gap-2 text-primary-text/80 hover:text-primary border-r-2 border-transparent hover:border-primary py-2 px-3 rounded-none transition-all duration-150'>
+                            <Link href="/signup" className={`text-sm w-full flex items-center gap-2 hover:text-primary border-r-2 hover:border-primary py-2 px-3 rounded-none transition-all duration-150 ${pathname === "/signup" ? "border-primary text-primary" : "border-transparent text-primary-text/80"}`}>
                                 <User size={20} className='font-boldbold' />
                                 <span className='font-semibold'>Create Account</span>
                             </Link>
