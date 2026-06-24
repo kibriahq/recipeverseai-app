@@ -186,7 +186,7 @@ const Page = () => {
                         </select>
                     </div>
                 </div>
-                <Button className="h-12 rounded-none px-5 md:px-10 rounded-r-md border order-primary" onClick={handleSearch} disabled={isLoading}>
+                <Button className="h-12 rounded-none px-5 md:px-10 rounded-r-md border order-primary" onClick={handleSearch} disabled={isLoading || searchKeyword.length < 2}>
                     {isLoading ? 'Searching...' : 'Search'}
                 </Button>
             </div>

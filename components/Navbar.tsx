@@ -16,6 +16,8 @@ const Navbar = () => {
     const router = useRouter();
 
     const handleSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (searchQuery.trim().length < 2) return;
+
         if (e.key === 'Enter') {
             defineQ(searchQuery);
             setSearchQuery('')
