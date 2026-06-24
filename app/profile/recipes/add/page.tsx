@@ -52,13 +52,22 @@ const Page = () => {
         control,
         register,
         handleSubmit,
-        formState: { errors }
+        formState: { errors },
+        setError
     } = useForm<RecipeType>();
 
     const handleCoverImg = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
-
+        // is the image PNG, JPEG, and WebP formats. and maximum upload size of 5 MB
         if (file) {
+            if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+                setError('cover_img', { message: 'Invalid file format. Only PNG, JPEG, and WebP formats are allowed.' })
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                setError('cover_img', { message: 'Maximum upload size is 5 MB.' })
+                return;
+            }
             setCoverFile(file)
             setCoverImg(URL.createObjectURL(file))
         }
@@ -278,6 +287,7 @@ const Page = () => {
                                             <Input id="cover_img" type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleCoverImg} />
                                         </Label>
                                     </div>
+                                    {errors.cover_img && <p className="text-xs text-red-500">{errors.cover_img.message}</p>}
                                 </div>
                             </div>
 
