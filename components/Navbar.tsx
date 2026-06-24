@@ -60,7 +60,7 @@ const Navbar = () => {
                         </Link>
                     </li>
                     <li className='mx-auto'>
-                        <Link href="/profile/recipes/add" className='text-sm flex items-center justify-center gap-0 text-white hover:text-primary rounded-full transition-all duration-150 flex-col bg-primary h-13 w-13'>
+                        <Link href="/profile/recipes/add" className='text-sm flex items-center justify-center gap-0 text-white rounded-full transition-all duration-150 flex-col bg-primary h-13 w-13'>
                             <Plus size={22} className='font-normal' />
                         </Link>
                     </li>

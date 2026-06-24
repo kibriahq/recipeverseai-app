@@ -227,7 +227,7 @@ const Page = () => {
                     <Button onClick={() => setShowFilter(!showFilter)} className='cursor-pointer'>Apply</Button>
                 </div>
 
-                <div className={`mt-4 grid grid-cols-2 gap-4 md:grid-cols-2 ${searchType === 'user' ? 'hidden' : ''}`}>
+                <div className={`mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 ${searchType === 'user' ? 'hidden' : ''}`}>
                     <div className="space-y-2">
                         <Input className='h-11' placeholder='Cuisine' value={cuisine} onChange={(e) => setCuisine(e.target.value)} />
                     </div>
