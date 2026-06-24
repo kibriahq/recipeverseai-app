@@ -167,6 +167,58 @@ GEMINI_API_KEY="your-gemini-api-key"
 
    Open [http://localhost:3000](http://localhost:3000).
 
+## Auto-create Profile on User Signup
+
+When a new user signs up through Supabase Auth (`auth.users`), a corresponding row is automatically created in `public.profiles` via a Postgres trigger. This avoids needing a separate API call from the client to create the profile.
+
+### How it works
+
+1. **Trigger function** — `handle_new_user()`
+   - Runs with `security definer`, so it executes with the privileges of the function owner (not the calling user). This is required because the client (anon/authenticated role) doesn't have direct INSERT access to `public.profiles` under RLS — the trigger needs elevated privileges to do it on their behalf.
+   - `set search_path = public` is set explicitly to prevent search_path hijacking (a known Postgres security gotcha with `security definer` functions).
+   - Falls back gracefully using `coalesce()`:
+     - `name` defaults to `''` if not provided in `raw_user_meta_data` (e.g. OAuth providers that don't send a name).
+     - `username` defaults to the user's `id` (as text) if not set, so there's no NOT NULL / unique constraint failure on signup — the user can update it later from settings.
+
+2. **Trigger** — `on_auth_user_created`
+   - Fires `after insert on auth.users`, `for each row`.
+   - Calls `handle_new_user()` for every newly created auth user.
+   - Wrapped in `drop trigger if exists` so the migration is idempotent (safe to re-run).
+
+### SQL
+
+```sql
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.profiles (id, email, name, username)
+  values (
+    new.id,
+    new.email,
+    coalesce(new.raw_user_meta_data->>'name', ''),
+    coalesce(new.raw_user_meta_data->>'username', new.id::text)
+  );
+
+  return new;
+end;
+$$;
+```
+
+```sql
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
+```
+
+### Notes
+- This trigger lives in the database (not application code) — visible in Supabase Dashboard → Database → Triggers / Functions, or in your migrations folder.
+- If signup ever fails with "profile not created" but auth user exists, check this trigger first — it's the most common point of silent failure (e.g. RLS blocking insert despite `security definer`, or a schema mismatch in `profiles` columns).
+
 ## Scripts
 
 | Command      | Description              |
@@ -181,7 +233,7 @@ GEMINI_API_KEY="your-gemini-api-key"
 ```
 app/                  # Next.js App Router pages & API routes
 ├── api/ai/route.ts   # Gemini AI chat endpoint
-├── (auth)            # Login, Signup
+├── (auth)            # Login, Signup, Forgot Password, Reset Password
 ├── profile/          # Profile management & recipe CRUD
 ├── explore/          # Search & discovery
 ├── recipes/[id]/     # Recipe detail pages
