@@ -6,7 +6,6 @@ import Sidebar from "@/components/Sidebar";
 import AiButton from "@/components/AiButton";
 import { AuthProvider } from "@/context/AuthContext";
 import { ToastContainer } from "react-toastify";
-import { createSupabaseServerClient } from "@/lib/supabase/server-client";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -18,17 +17,11 @@ export const metadata: Metadata = {
   description: "AI-powered recipe discovery and cooking assistant",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createSupabaseServerClient();
-  const { data } = await supabase.auth.getSession();
-  const { data: user } = await supabase.auth.getUser();
-  console.log(data);
-  console.log(user);
-
   return (
     <html
       lang="en"
