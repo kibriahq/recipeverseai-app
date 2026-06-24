@@ -39,6 +39,15 @@ const Page = () => {
             return;
         }
 
+        if (data.current_password === data.new_password) {
+            setError("new_password", {
+                message: "New password must be different from current password",
+                type: "manual",
+            });
+            setLoading(false);
+            return;
+        }
+
         try {
             await updatePassword(data.current_password, data.new_password);
 
