@@ -36,9 +36,7 @@ export default function UpdatePasswordPage() {
         setLoading(true)
 
         const supabase = getSupabaseBrowserClient()
-        const { data, error } = await supabase.auth.updateUser({ password })
-
-        console.log(error, data);
+        const { error } = await supabase.auth.updateUser({ password })
 
         setLoading(false)
         toast.dismiss()
