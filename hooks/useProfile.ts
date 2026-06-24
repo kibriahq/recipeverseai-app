@@ -42,7 +42,7 @@ const useProfile = () => {
       await updateProfile(formData);
       updateUser();
       toast.success("Profile updated successfully!");
-      router.push("/profile");
+      router.back();
     } catch (error: any) {
       toast.error(error.message);
     } finally {
