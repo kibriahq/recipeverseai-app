@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input'
 import RecipeCard from '@/components/RecipeCard'
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client'
 import { RecipeType } from '@/types/recipe'
-import { Loader2, SlidersHorizontal } from 'lucide-react'
+import { Clock, Loader2, SlidersHorizontal } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState, useRef, useCallback } from 'react'
@@ -19,6 +19,13 @@ type UserResult = {
     bio?: string | null
 }
 
+export const COOKING_TIME_OPTIONS = [
+    { label: 'Quick (Under 30 min)', min: 0, max: 29 },
+    { label: 'Medium (30-60 min)', min: 30, max: 60 },
+    { label: 'Long (1-2 hours)', min: 61, max: 120 },
+    { label: 'Very Long (Over 2 hours)', min: 121, max: null },
+]
+
 const PAGE_SIZE = 12;
 
 const Page = () => {
@@ -26,6 +33,7 @@ const Page = () => {
     const [searchKeyword, setSearchKeyword] = useState('')
     const [cuisine, setCuisine] = useState('')
     const [difficulty, setDifficulty] = useState('')
+    const [cookingTime, setCookingTime] = useState('')
 
     const [recipes, setRecipes] = useState<RecipeType[]>([])
     const [users, setUsers] = useState<UserResult[]>([])
@@ -41,7 +49,7 @@ const Page = () => {
     const { q, defineQ } = useAuth()
     const supabase = getSupabaseBrowserClient()
     const sentinelRef = useRef<HTMLDivElement>(null)
-
+    
     // fetchRecipes + handleSearch  duplicate query
     const runSearch = useCallback(async (pageNum: number, append: boolean) => {
         const keyword = q ? q.trim().replaceAll(',', ' ') : searchKeyword.trim().replaceAll(',', ' ')
@@ -62,6 +70,16 @@ const Page = () => {
                 if (keyword) query = query.or(`title.ilike.%${keyword}%,description.ilike.%${keyword}%,tags.ilike.%${keyword}%`)
                 if (cuisine.trim()) query = query.ilike('cuisine', `%${cuisine.trim()}%`)
                 if (difficulty) query = query.eq('difficulty', difficulty)
+                if (cookingTime) {
+                    console.log(cookingTime)
+                    const range = COOKING_TIME_OPTIONS.find((opt) => opt.label === cookingTime)
+                    console.log(range);
+
+                    if (range) {
+                        query = query.gte('cooking_time', range.min)
+                        if (range.max !== null) query = query.lte('cooking_time', range.max)
+                    }
+                }
 
                 const { data: recipesRaw, error } = await query
                 if (error) throw new Error(error.message)
@@ -115,7 +133,7 @@ const Page = () => {
             setIsLoading(false)
             setIsLoadingMore(false)
         }
-    }, [q, searchKeyword, searchType, cuisine, difficulty, supabase])
+    }, [q, searchKeyword, searchType, cuisine, difficulty, cookingTime, supabase])
 
     // new search/filter means fresh start from page 0
     const handleSearch = useCallback(() => {
@@ -194,9 +212,10 @@ const Page = () => {
             <div className="flex justify-between items-center my-1 px-1">
                 <p className="">
                     <span className='font-semibold text-primary-text'>Filters: </span>
-                    {cuisine || difficulty ? <></> : <span className='text-sm text-secondary-text'>No filters applied</span>}
+                    {cuisine || difficulty || cookingTime ? <></> : <span className='text-sm text-secondary-text'>No filters applied</span>}
                     {difficulty && <span className='ml-1 capitalize text-sm'>{difficulty},</span>}
-                    {cuisine && <span className='ml-1 capitalize text-sm'>{cuisine}</span>}
+                    {cuisine && <span className='ml-1 capitalize text-sm'>{cuisine},</span>}
+                    {cookingTime && <span className='ml-1 capitalize text-sm'>{cookingTime}</span>}
                 </p>
                 <p className="text-primary-text font-semibold underline cursor-pointer" onClick={() => setShowFilter(!showFilter)}> Add Filter</p>
             </div>
@@ -229,6 +248,24 @@ const Page = () => {
                             <SlidersHorizontal size={18} className="hidden md:block pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-secondary-text" />
                         </div>
                     </div>
+
+                    <div className="space-y-2">
+                        <div className="relative">
+                            <select
+                                id="cooking-time-filter"
+                                value={cookingTime}
+                                onChange={(e) => setCookingTime(e.target.value)}
+                                className="h-11 w-full appearance-none rounded-md border border-border/80 bg-background px-3 pr-10 text-sm text-primary-text outline-none transition-all focus:border-primary focus:ring-1 focus:ring-primary"
+                            >
+                                <option value="">Any cooking time</option>
+                                {COOKING_TIME_OPTIONS.map((opt) => (
+                                    <option key={opt.label} value={opt.label}>{opt.label}</option>
+                                ))}
+                            </select>
+                            <Clock size={18} className="hidden md:block pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-secondary-text" />
+                        </div>
+                    </div>
+
                 </div>
 
             </section>
